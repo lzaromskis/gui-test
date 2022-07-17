@@ -23,7 +23,7 @@ public class AppChecker
 //			SystemUtils.logMessage("e:/files.csv", "" + (a++) + ";" + context.getName().trim() + ";" + context.getPackage()+ ";" + context.getVersion() + ";" + appName.getAbsolutePath());
 //			SystemUtils.logMessage("e:/files.txt", "| " + (a) + " | " + context.getName().trim() + " | " + context.getPackage()+ " | " + context.getVersion() + " |");
 		}
-		
+
 		//new StatisticsManager().saveAppInfo(context);
 	
 		for (State state : context.getStates())
