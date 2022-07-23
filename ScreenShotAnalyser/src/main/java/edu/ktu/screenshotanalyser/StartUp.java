@@ -1,10 +1,16 @@
 package edu.ktu.screenshotanalyser;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import edu.ktu.screenshotanalyser.checks.experiments.*;
+import edu.ktu.screenshotanalyser.tools.ColorSpace;
+import edu.ktu.screenshotanalyser.tools.ColorSpaceConverter;
+import edu.ktu.screenshotanalyser.tools.ConsoleOutput;
 import org.opencv.core.Core;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -13,42 +19,46 @@ import edu.ktu.screenshotanalyser.checks.AppChecker;
 import edu.ktu.screenshotanalyser.checks.DataBaseResultsCollector;
 import edu.ktu.screenshotanalyser.checks.ResultsCollector;
 import edu.ktu.screenshotanalyser.checks.RulesSetChecker;
-import edu.ktu.screenshotanalyser.checks.experiments.ClippedControlCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.ClippedTextCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.GrammarCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.MissingTextCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.MissingTranslationCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.MixedLanguagesAppCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.MixedLanguagesStateCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.ObscuredControlCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.ObscuredTextCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.OffensiveMessagesCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.UnalignedControlsCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.UnlocalizedIconsCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.WrongEncodingCheck;
-import edu.ktu.screenshotanalyser.checks.experiments.WrongLanguageCheck;
 import edu.ktu.screenshotanalyser.tools.Settings;
-import net.sourceforge.tess4j.TessAPI1;
+
+import javax.imageio.ImageIO;
 
 public class StartUp
 {
 	static
 	{
-		//nu.pattern.OpenCV.loadShared();
+		nu.pattern.OpenCV.loadShared();
 		
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);				
 	}
 	
 	public static void main(String[] args) throws IOException, InterruptedException
 	{
+		var output = new ConsoleOutput();
+		for (int i = 0; i < 5; i++) {
+			output.write(Integer.toString(i), true);
+			Thread.sleep(1000);
+		}
+
+		output.write("Starting...");
 		enableLogs();
-		
+		BufferedImage img = ImageIO.read(new File("D:\\1\\test\\comp.png"));
+		ColorSpaceConverter converter = new ColorSpaceConverter();
+
+		BufferedImage result = converter.convertImage(img, ColorSpace.PROTANOPIA);
+		ImageIO.write(result, "jpg", new File("D:\\1\\test\\protanopia.png"));
+
+		output.write("Running experiments...");
 		runExperiments();
+		ColorCompatibilityCheck check = new ColorCompatibilityCheck();
+		check.analyze(img, ColorCompatibilityCheck.ColorCombinations.COMPLEMENTARY, 2);
+		check.analyze(result, ColorCompatibilityCheck.ColorCombinations.COMPLEMENTARY, 2);
+		output.write("Finished experiments...");
 	}
 	
 	private static void runExperiments() throws IOException, InterruptedException
 	{
-		var failures = new DataBaseResultsCollector("sdssss", false);
+		var failures = new DataBaseResultsCollector("defects-db", false);
 		var checker = new RulesSetChecker();
 
 		//checker.addRule(new UnalignedControlsCheck());    +
@@ -66,7 +76,8 @@ public class StartUp
 		//checker.addRule(new OffensiveMessagesCheck());    + 
 		//checker.addRule(new UnreadableTextCheck());       +
 		//checker.addRule(new TooHardToUnderstandCheck());  +
-		checker.addRule(new MissingTextCheck());          //+
+		//checker.addRule(new MissingTextCheck());          //+
+		checker.addRule(new ColorCompatibilityCheck());
 		
 		var apps = new File(Settings.appsFolder).listFiles(p -> p.isDirectory());
 		var exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());		
