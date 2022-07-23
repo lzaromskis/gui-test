@@ -154,12 +154,12 @@
 		</dependency>
 
 
-<!-- broken	<dependency>
+<!--		<dependency>
 			<groupId>com.aliasi</groupId>
 			<artifactId>lingpipe</artifactId>
 			<version>4.1.2</version>
-		</dependency> -->
-
+		</dependency>
+-->
 <!--
 		<dependency>
 			<groupId>com.github.spullara.cli-parser</groupId>

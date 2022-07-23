@@ -2,8 +2,7 @@ package edu.ktu.screenshotanalyser.utils;
 
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.opencv.core.Core;
 import edu.ktu.screenshotanalyser.tools.ImageUtils;
@@ -11,7 +10,7 @@ import junit.framework.Assert;
 
 public class ImageUtilsTests
 {
-	@BeforeClass
+	@BeforeAll
 	void setUp()
 	{
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);

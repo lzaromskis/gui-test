@@ -3,7 +3,7 @@ package edu.ktu.screenshotanalyser.checks;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,7 +19,7 @@ public class BaseTextRuleCheckTests extends BaseTextRuleCheck
 	@MethodSource
 	public void testIsSimillar(String left, String right, boolean expected)
 	{
-		Assert.assertEquals(expected, isSimillar(left, right));
+		Assertions.assertEquals(expected, isSimillar(left, right));
 	}
 	
 	private static Stream<Arguments> testIsSimillar()

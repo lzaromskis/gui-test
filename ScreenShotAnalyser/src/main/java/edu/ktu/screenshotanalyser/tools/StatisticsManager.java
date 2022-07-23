@@ -15,7 +15,7 @@ import edu.ktu.screenshotanalyser.context.State;
 
 public class StatisticsManager
 {
-  protected String connectionUrl = "jdbc:sqlserver://ME;database=defects-db;integratedSecurity=true;";
+  protected String connectionUrl = "jdbc:sqlserver://DESKTOP-NML4AD7;database=defects-db;user=gui;password=gui;encrypt=true;trustServerCertificate=true;";
 
 	public void saveAppInfo(AppContext appContext)
 	{
