@@ -71,7 +71,7 @@ public class Configuration {
     public String[] getRuleCodes() throws MissingSettingException {
         var rulesString = _configValues.get("ruleCodes");
         if (rulesString == null) {
-            throw new MissingSettingException("Could not find value for 'ruleCodes'");
+            throw new MissingSettingException("Could not find value for 'ruleCodes'.");
         }
 
         var splitRules = rulesString.split(",");
@@ -96,7 +96,7 @@ public class Configuration {
     private String getString(String key) throws MissingSettingException {
         var value = _configValues.get(key);
         if (value == null) {
-            throw new MissingSettingException(String.format("Could not find value for '%s'", key));
+            throw new MissingSettingException(String.format("Could not find value for '%s'.", key));
         }
 
         return value;
