@@ -51,9 +51,7 @@ public class ProgressTracker implements IObserver {
 
     private float getProgress() {
         // Returns 0 if expected process count is 0
-        return _expectedProcessedCount == 0
-            ? 0f
-            : MathUtils.clamp((float)_processedCount / (float)_expectedProcessedCount, 0f, 1f);
+        return _expectedProcessedCount == 0 ? 0f : MathUtils.clamp((float) _processedCount / (float) _expectedProcessedCount, 0f, 1f);
     }
 
     private String getProgressPercentageString() {

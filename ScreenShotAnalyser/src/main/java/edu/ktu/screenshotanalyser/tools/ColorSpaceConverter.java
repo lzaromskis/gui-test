@@ -9,30 +9,46 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 
 // Color matrices taken from: https://www.inf.ufrgs.br/%7Eoliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
-public class ColorSpaceConverter implements  IColorSpaceConverter {
-    private final static Matrix3x3 PROTANOPIA_MATRIX = new Matrix3x3(
-             0.152286f,  1.052583f, -0.204868f,
-             0.114503f,  0.786281f,  0.099216f,
-            -0.003882f, -0.048116f,  1.051998f
-    );
+public class ColorSpaceConverter implements IColorSpaceConverter {
+    private final static Matrix3x3 PROTANOPIA_MATRIX = new Matrix3x3(0.152286f,
+                                                                     1.052583f,
+                                                                     -0.204868f,
+                                                                     0.114503f,
+                                                                     0.786281f,
+                                                                     0.099216f,
+                                                                     -0.003882f,
+                                                                     -0.048116f,
+                                                                     1.051998f);
 
-    private final static Matrix3x3 DEUTERANOPIA_MATRIX = new Matrix3x3(
-             0.367322f,  0.860646f, -0.227968f,
-             0.280085f,  0.672501f,  0.047413f,
-            -0.011820f,  0.042940f,  0.968881f
-    );
+    private final static Matrix3x3 DEUTERANOPIA_MATRIX = new Matrix3x3(0.367322f,
+                                                                       0.860646f,
+                                                                       -0.227968f,
+                                                                       0.280085f,
+                                                                       0.672501f,
+                                                                       0.047413f,
+                                                                       -0.011820f,
+                                                                       0.042940f,
+                                                                       0.968881f);
 
-    private final static Matrix3x3 TRITANOPIA_MATRIX = new Matrix3x3(
-             1.255528f, -0.076749f, -0.178779f,
-            -0.078411f,  0.930809f,  0.147602f,
-             0.004733f,  0.691367f,  0.303900f
-    );
+    private final static Matrix3x3 TRITANOPIA_MATRIX = new Matrix3x3(1.255528f,
+                                                                     -0.076749f,
+                                                                     -0.178779f,
+                                                                     -0.078411f,
+                                                                     0.930809f,
+                                                                     0.147602f,
+                                                                     0.004733f,
+                                                                     0.691367f,
+                                                                     0.303900f);
 
-    private final static Matrix3x3 ACHROMATOPSIA_MATRIX = new Matrix3x3(
-            0.333333f, 0.333333f, 0.333333f,
-            0.333333f, 0.333333f, 0.333333f,
-            0.333333f, 0.333333f, 0.333333f
-    );
+    private final static Matrix3x3 ACHROMATOPSIA_MATRIX = new Matrix3x3(0.333333f,
+                                                                        0.333333f,
+                                                                        0.333333f,
+                                                                        0.333333f,
+                                                                        0.333333f,
+                                                                        0.333333f,
+                                                                        0.333333f,
+                                                                        0.333333f,
+                                                                        0.333333f);
 
     @Override
     public BufferedImage convertImage(BufferedImage image, ColorSpaces colorSpace) {
@@ -78,7 +94,9 @@ public class ColorSpaceConverter implements  IColorSpaceConverter {
     private static BufferedImage copyBufferedImage(BufferedImage bi) {
         ColorModel cm = bi.getColorModel();
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        WritableRaster raster = bi.copyData(bi.getRaster().createCompatibleWritableRaster());
+        WritableRaster raster = bi.copyData(bi
+                                                .getRaster()
+                                                .createCompatibleWritableRaster());
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 }

@@ -10,129 +10,122 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MicsTools extends StatisticsManager
-{
-	public static void main(String[] args) throws SQLException, IOException
-	{
-		//new MicsTools().importTooSmallResultsFromLogFile();
-		//new MicsTools().importBadSpellingResultsFromLogFile();
-//		new MicsTools().importMisingTextsResultsFromLogFile();
-	}
+public class MicsTools extends StatisticsManager {
+    public static void main(String[] args) throws SQLException, IOException {
+        //new MicsTools().importTooSmallResultsFromLogFile();
+        //new MicsTools().importBadSpellingResultsFromLogFile();
+        //		new MicsTools().importMisingTextsResultsFromLogFile();
+    }
 
-	private void importTooSmallResultsFromLogFile() throws SQLException, IOException
-	{
-		List<String> allLines = Files.readAllLines(Paths.get("E:\\_analyzer_\\logTS2.txt"));
+    private void importTooSmallResultsFromLogFile() throws SQLException, IOException {
+        List<String> allLines = Files.readAllLines(Paths.get("E:\\_analyzer_\\logTS2.txt"));
 
-		try (Connection connection = DriverManager.getConnection(this.connectionUrl))
-		{
-			long testRunId = insert(connection, "INSERT TestRun ([Description]) VALUES (?)", "Too Small Results Import");
-			long defectId = 19;
+        try (Connection connection = DriverManager.getConnection(this.connectionUrl)) {
+            long testRunId = insert(connection, "INSERT TestRun ([Description]) VALUES (?)", "Too Small Results Import");
+            long defectId = 19;
 
-			for (String line : allLines)
-			{
-				line = line.substring("TS2: d:\\_r\\".length());
-				line = line.substring(0, line.indexOf(' '));
+            for (String line : allLines) {
+                line = line.substring("TS2: d:\\_r\\".length());
+                line = line.substring(0, line.indexOf(' '));
 
-				String screenShotFileName = line;
+                String screenShotFileName = line;
 
-				long screenShotId = getId(connection, "SELECT Id FROM ScreenShot WHERE FileName = ?", screenShotFileName);
+                long screenShotId = getId(connection, "SELECT Id FROM ScreenShot WHERE FileName = ?", screenShotFileName);
 
-				insert(connection, "INSERT TestRunDefect (DefectTypeId, ScreenshotId, TestRunId, DefectsCount) VALUES (?, ?, ?, ?)", defectId, screenShotId, testRunId, 1);
-			}
-			
-			System.out.println("TestRunId: " + testRunId);
-		}
-	}
-	
-	private void importBadSpellingResultsFromLogFile() throws SQLException, IOException
-	{
-		List<String> allLines = readAllLines("E:\\_analyzer_\\RESULTS\\logSS1.txt", null);
+                insert(connection,
+                       "INSERT TestRunDefect (DefectTypeId, ScreenshotId, TestRunId, DefectsCount) VALUES (?, ?, ?, ?)",
+                       defectId,
+                       screenShotId,
+                       testRunId,
+                       1);
+            }
 
-		try (Connection connection = DriverManager.getConnection(this.connectionUrl))
-		{
-			long testRunId = insert(connection, "INSERT TestRun ([Description]) VALUES (?)", "Bad Spelling Results Import");
-			long defectId = 2;
-			long resourceDefects = 0;
+            System.out.println("TestRunId: " + testRunId);
+        }
+    }
 
-			for (String line : allLines)
-			{
-				line = line.substring("SS1: d:\\_r\\".length());
-				line = line.substring(0, line.indexOf(' '));
+    private void importBadSpellingResultsFromLogFile() throws SQLException, IOException {
+        List<String> allLines = readAllLines("E:\\_analyzer_\\RESULTS\\logSS1.txt", null);
 
-				String screenShotFileName = line;
+        try (Connection connection = DriverManager.getConnection(this.connectionUrl)) {
+            long testRunId = insert(connection, "INSERT TestRun ([Description]) VALUES (?)", "Bad Spelling Results Import");
+            long defectId = 2;
+            long resourceDefects = 0;
 
-				Long screenShotId = getId(connection, "SELECT Id FROM ScreenShot WHERE FileName = ?", screenShotFileName);
+            for (String line : allLines) {
+                line = line.substring("SS1: d:\\_r\\".length());
+                line = line.substring(0, line.indexOf(' '));
 
-				if (null == screenShotId)
-				{
-					resourceDefects++;
-				}
-				else
-				{
-					insert(connection, "INSERT TestRunDefect (DefectTypeId, ScreenshotId, TestRunId, DefectsCount) VALUES (?, ?, ?, ?)", defectId, screenShotId, testRunId, 1);
-				}
-			}
-			
-			System.out.println("TestRunId: " + testRunId + ", resource defects: " + resourceDefects);
-		}
-	}
-	
-	private void importMisingTextsResultsFromLogFile() throws SQLException, IOException
-	{
-		try (Connection connection = DriverManager.getConnection(this.connectionUrl))
-		{
-			List<String> allLines = readAllLines("E:\\e1\\3\\66611", "TM1: ");
+                String screenShotFileName = line;
 
-			long testRunId = insert(connection, "INSERT TestRun ([Description]) VALUES (?)", "Missing Text Results Import");
-			long defectId = 26;
-			long resourceDefects = 0;
+                Long screenShotId = getId(connection, "SELECT Id FROM ScreenShot WHERE FileName = ?", screenShotFileName);
 
-			for (String line : allLines)
-			{
-				line = line.substring("TM1: ".length());
-				
-				String screenShotFileName = line.substring(0, line.indexOf(' '));
-				
-				screenShotFileName = screenShotFileName.substring("d:\\_r\\".length());
-				
-				Long screenShotId = getId(connection, "SELECT Id FROM ScreenShot WHERE FileName = ?", screenShotFileName);
+                if (null == screenShotId) {
+                    resourceDefects++;
+                } else {
+                    insert(connection,
+                           "INSERT TestRunDefect (DefectTypeId, ScreenshotId, TestRunId, DefectsCount) VALUES (?, ?, ?, ?)",
+                           defectId,
+                           screenShotId,
+                           testRunId,
+                           1);
+                }
+            }
 
-				if (null == screenShotId)
-				{
-					resourceDefects++;
-				}
-				else
-				{
-					insert(connection, "INSERT TestRunDefect (DefectTypeId, ScreenshotId, TestRunId, DefectsCount) VALUES (?, ?, ?, ?)", defectId, screenShotId, testRunId, 1);
-				}
-			}
-			
-			System.out.println("TestRunId: " + testRunId + ", resource defects: " + resourceDefects);				
-		}
-	}
-	
-	private List<String> readAllLines(String fileName, String prefix) throws IOException
-	{
-		ArrayList<String> result = new ArrayList<>();
+            System.out.println("TestRunId: " + testRunId + ", resource defects: " + resourceDefects);
+        }
+    }
 
-		RandomAccessFile file = new RandomAccessFile(fileName, "r");
-		
-		String str;
-		
-		while ((str = file.readLine()) != null)
-		{
-			if (null == prefix)
-			{
-				result.add(str);
-			}
-			else if (str.startsWith(prefix))
-			{
-				result.add(str);
-			}
-		}
+    private void importMisingTextsResultsFromLogFile() throws SQLException, IOException {
+        try (Connection connection = DriverManager.getConnection(this.connectionUrl)) {
+            List<String> allLines = readAllLines("E:\\e1\\3\\66611", "TM1: ");
 
-		file.close();
+            long testRunId = insert(connection, "INSERT TestRun ([Description]) VALUES (?)", "Missing Text Results Import");
+            long defectId = 26;
+            long resourceDefects = 0;
 
-		return result;
-	}
+            for (String line : allLines) {
+                line = line.substring("TM1: ".length());
+
+                String screenShotFileName = line.substring(0, line.indexOf(' '));
+
+                screenShotFileName = screenShotFileName.substring("d:\\_r\\".length());
+
+                Long screenShotId = getId(connection, "SELECT Id FROM ScreenShot WHERE FileName = ?", screenShotFileName);
+
+                if (null == screenShotId) {
+                    resourceDefects++;
+                } else {
+                    insert(connection,
+                           "INSERT TestRunDefect (DefectTypeId, ScreenshotId, TestRunId, DefectsCount) VALUES (?, ?, ?, ?)",
+                           defectId,
+                           screenShotId,
+                           testRunId,
+                           1);
+                }
+            }
+
+            System.out.println("TestRunId: " + testRunId + ", resource defects: " + resourceDefects);
+        }
+    }
+
+    private List<String> readAllLines(String fileName, String prefix) throws IOException {
+        ArrayList<String> result = new ArrayList<>();
+
+        RandomAccessFile file = new RandomAccessFile(fileName, "r");
+
+        String str;
+
+        while ((str = file.readLine()) != null) {
+            if (null == prefix) {
+                result.add(str);
+            } else if (str.startsWith(prefix)) {
+                result.add(str);
+            }
+        }
+
+        file.close();
+
+        return result;
+    }
 }

@@ -14,10 +14,9 @@ public class ProgressBarRendererTests {
 
     @ParameterizedTest
     @MethodSource("progressAndExpectedBarProvider")
-    public void render_ProgressBarReflectsProgress(float progress, String expectedBar)
-    {
+    public void render_ProgressBarReflectsProgress(float progress, String expectedBar) {
         //Arrange
-        var renderer = new ProgressBarRenderer(10, "[", "]", "=", new String[] {"-", "\\", "|", "/"}, " ");
+        var renderer = new ProgressBarRenderer(10, "[", "]", "=", new String[]{"-", "\\", "|", "/"}, " ");
 
         //Act
         var result = renderer.render(progress);
@@ -27,22 +26,19 @@ public class ProgressBarRendererTests {
     }
 
     private static Stream<Arguments> progressAndExpectedBarProvider() {
-        return Stream.of(
-            arguments(-1f,   "[-         ]"),
-            arguments(0f,    "[-         ]"),
-            arguments(0.1f,  "[-         ]"),
-            arguments(0.11f, "[=-        ]"),
-            arguments(0.45f, "[====-     ]"),
-            arguments(1f,    "[==========]"),
-            arguments(2f,    "[==========]")
-        );
+        return Stream.of(arguments(-1f, "[-         ]"),
+                         arguments(0f, "[-         ]"),
+                         arguments(0.1f, "[-         ]"),
+                         arguments(0.11f, "[=-        ]"),
+                         arguments(0.45f, "[====-     ]"),
+                         arguments(1f, "[==========]"),
+                         arguments(2f, "[==========]"));
     }
 
     @Test
-    public void render_RepeatingCallsChangePartialCell()
-    {
+    public void render_RepeatingCallsChangePartialCell() {
         //Arrange
-        var renderer = new ProgressBarRenderer(10, "[", "]", "=", new String[] {"-", "\\", "|", "/"}, " ");
+        var renderer = new ProgressBarRenderer(10, "[", "]", "=", new String[]{"-", "\\", "|", "/"}, " ");
 
         //Act
         var result1 = renderer.render(0f);
@@ -60,10 +56,9 @@ public class ProgressBarRendererTests {
     }
 
     @Test
-    public void render_AddedFullCellResetsPartialCell()
-    {
+    public void render_AddedFullCellResetsPartialCell() {
         //Arrange
-        var renderer = new ProgressBarRenderer(10, "[", "]", "=", new String[] {"-", "\\", "|", "/"}, " ");
+        var renderer = new ProgressBarRenderer(10, "[", "]", "=", new String[]{"-", "\\", "|", "/"}, " ");
 
         //Act
         var result1 = renderer.render(0f);

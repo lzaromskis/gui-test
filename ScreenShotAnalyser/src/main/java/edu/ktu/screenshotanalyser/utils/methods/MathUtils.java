@@ -6,11 +6,13 @@ public final class MathUtils {
     }
 
     public static float clamp(float val, float min, float max) {
-        if (val < min)
+        if (val < min) {
             return min;
+        }
 
-        if (val > max)
+        if (val > max) {
             return max;
+        }
 
         return val;
     }
@@ -24,21 +26,24 @@ public final class MathUtils {
     }
 
     public static float circularDifference(float lhs, float rhs, float scaleMin, float scaleMax) {
-        if (scaleMax <= scaleMin)
+        if (scaleMax <= scaleMin) {
             throw new IllegalArgumentException("scaleMax must be greater than scaleMin");
+        }
 
         var scale = scaleMax - scaleMin;
         var halfScale = scale / 2f;
 
         float diff;
-        if (lhs < rhs)
+        if (lhs < rhs) {
             diff = lhs - rhs;
-        else
+        } else {
             diff = rhs - lhs;
+        }
 
-        if (Math.abs(diff) > halfScale)
+        if (Math.abs(diff) > halfScale) {
             return diff + scale;
-        else
+        } else {
             return Math.abs(diff);
+        }
     }
 }

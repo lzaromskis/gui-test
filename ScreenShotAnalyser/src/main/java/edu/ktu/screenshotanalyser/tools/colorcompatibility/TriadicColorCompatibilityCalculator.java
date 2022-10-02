@@ -7,47 +7,50 @@ import edu.ktu.screenshotanalyser.utils.models.PixelRGB;
 import java.util.Arrays;
 
 public class TriadicColorCompatibilityCalculator extends BaseColorCompatibilityCalculator {
-	private static final float EXPECTED_HUE_DIFFERENCE = 0.33333f; // 120 difference in 0-360 scale
-	private static final float MAX_HUE_DEVIATION = 0.0278f; // 10 difference in 0-360 scale
-	private static final float MAX_SATURATION_DEVIATION = 0.2f;
-	private static final float MAX_VALUE_DEVIATION = 0.2f;
-	@Override
-	public float calculateCompatibility(PixelRGB[] colors) {
-		if (colors.length != 3)
-			return 0f;
+    private static final float EXPECTED_HUE_DIFFERENCE = 0.33333f; // 120 difference in 0-360 scale
+    private static final float MAX_HUE_DEVIATION = 0.0278f; // 10 difference in 0-360 scale
+    private static final float MAX_SATURATION_DEVIATION = 0.2f;
+    private static final float MAX_VALUE_DEVIATION = 0.2f;
 
-		var colorsHsv = Arrays
-				.stream(colors)
-				.map(PixelHSV::new)
-				.sorted(PixelHSV::HueComparator)
-				.toArray(PixelHSV[]::new);
+    @Override
+    public float calculateCompatibility(PixelRGB[] colors) {
+        if (colors.length != 3) {
+            return 0f;
+        }
 
-		var hueCoefSum = 0f;
-		var satCoefSum = 0f;
-		var valCoefSum = 0f;
+        var colorsHsv = Arrays
+            .stream(colors)
+            .map(PixelHSV::new)
+            .sorted(PixelHSV::HueComparator)
+            .toArray(PixelHSV[]::new);
 
-		for (int i = 0; i < colorsHsv.length; i++) {
-			var hueCoef = calculateHueCompatibilityWithNeighbours(colorsHsv, i, EXPECTED_HUE_DIFFERENCE, MAX_HUE_DEVIATION);
-			if (MathUtils.equals(hueCoef, 0f))
-				return 0f;
+        var hueCoefSum = 0f;
+        var satCoefSum = 0f;
+        var valCoefSum = 0f;
 
-			hueCoefSum += hueCoef;
+        for (int i = 0; i < colorsHsv.length; i++) {
+            var hueCoef = calculateHueCompatibilityWithNeighbours(colorsHsv, i, EXPECTED_HUE_DIFFERENCE, MAX_HUE_DEVIATION);
+            if (MathUtils.equals(hueCoef, 0f)) {
+                return 0f;
+            }
 
-			var satCoef = calculateSaturationCompatibilityWithNeighbours(colorsHsv, i, MAX_SATURATION_DEVIATION);
-			if (MathUtils.equals(satCoef, 0f))
-				return 0f;
+            hueCoefSum += hueCoef;
 
-			satCoefSum += satCoef;
+            var satCoef = calculateSaturationCompatibilityWithNeighbours(colorsHsv, i, MAX_SATURATION_DEVIATION);
+            if (MathUtils.equals(satCoef, 0f)) {
+                return 0f;
+            }
 
-			var valCoef = calculateValueCompatibilityWithNeighbours(colorsHsv, i, MAX_VALUE_DEVIATION);
-			if (MathUtils.equals(valCoef, 0f))
-				return 0f;
+            satCoefSum += satCoef;
 
-			valCoefSum += valCoef;
-		}
+            var valCoef = calculateValueCompatibilityWithNeighbours(colorsHsv, i, MAX_VALUE_DEVIATION);
+            if (MathUtils.equals(valCoef, 0f)) {
+                return 0f;
+            }
 
-		return (hueCoefSum / 3f) * 0.7f +
-				(satCoefSum / 3f) * 0.15f +
-				(valCoefSum / 3f) * 0.15f;
-	}
+            valCoefSum += valCoef;
+        }
+
+        return (hueCoefSum / 3f) * 0.7f + (satCoefSum / 3f) * 0.15f + (valCoefSum / 3f) * 0.15f;
+    }
 }

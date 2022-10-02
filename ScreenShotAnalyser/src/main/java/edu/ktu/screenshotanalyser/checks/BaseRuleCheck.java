@@ -1,5 +1,11 @@
 package edu.ktu.screenshotanalyser.checks;
 
+import edu.ktu.screenshotanalyser.context.Control;
+import edu.ktu.screenshotanalyser.context.State;
+import edu.ktu.screenshotanalyser.tools.IObservable;
+import edu.ktu.screenshotanalyser.tools.IObserver;
+import edu.ktu.screenshotanalyser.tools.Settings;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,170 +16,138 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
-import edu.ktu.screenshotanalyser.context.Control;
-import edu.ktu.screenshotanalyser.context.State;
-import edu.ktu.screenshotanalyser.tools.IObservable;
-import edu.ktu.screenshotanalyser.tools.IObserver;
-import edu.ktu.screenshotanalyser.tools.Settings;
+public abstract class BaseRuleCheck implements IObservable {
+    private final List<IObserver> _observers;
 
-public abstract class BaseRuleCheck implements IObservable
-{
-	private final List<IObserver> _observers;
+    protected BaseRuleCheck(long id, String ruleCode) {
+        this.id = id;
+        this.ruleCode = ruleCode;
+        this._observers = new LinkedList<>();
+    }
 
-	protected BaseRuleCheck(long id, String ruleCode)
-	{
-		this.id = id;
-		this.ruleCode = ruleCode;
-		this._observers = new LinkedList<>();
-	}
-	
-	public void logMessage(String message)
-	{
-		message = message.trim() + "\n";
-		
-		try
-		{
-			var logFile = Paths.get("e:/log/" + this.ruleCode + ".txt");
-			
-			Files.write(logFile, message.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND, StandardOpenOption.CREATE);
-		}
-		catch (IOException ex)
-		{
-			ex.printStackTrace(System.err);
-		}
-	}
-	
-	public String getRuleCode()
-	{
-		return this.ruleCode;
-	}
-	
-	public long getId()
-	{
-		return this.id;
-	}
-	
-	protected Set<String> loadLastRun(String fileName, String prefix)
-	{
-		var lastFunFiles = new HashSet<String>();
+    public void logMessage(String message) {
+        message = message.trim() + "\n";
 
-		try (var reader = new BufferedReader(new FileReader(fileName)))
-		{
-			var line = reader.readLine();
+        try {
+            var logFile = Paths.get("e:/log/" + this.ruleCode + ".txt");
 
-			while (line != null)
-			{
-				if (line.startsWith(prefix))
-				{
-					var file = line.substring(prefix.length());
+            Files.write(logFile, message.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+        }
+    }
 
-					file = file.split(" ")[0];
+    public String getRuleCode() {
+        return this.ruleCode;
+    }
 
-					lastFunFiles.add(file);
-				}
+    public long getId() {
+        return this.id;
+    }
 
-				line = reader.readLine();
-			}
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
+    protected Set<String> loadLastRun(String fileName, String prefix) {
+        var lastFunFiles = new HashSet<String>();
 
-			return null;
-		}
+        try (var reader = new BufferedReader(new FileReader(fileName))) {
+            var line = reader.readLine();
 
-		if (!lastFunFiles.isEmpty())
-		{
-			return lastFunFiles;
-		}
-		else
-		{
-			return null;
-		}
-	}
-	
-	protected static String executeShellCommand(String... command)
-	{
-		var result = new StringBuilder("");
+            while (line != null) {
+                if (line.startsWith(prefix)) {
+                    var file = line.substring(prefix.length());
 
-		try
-		{
-			var process = Runtime.getRuntime().exec(command, new String[] { "PYTHONIOENCODING=utf8" }, null);
+                    file = file.split(" ")[0];
 
-			try (var reader = new BufferedReader(new InputStreamReader(process.getInputStream())))
-			{
-				String line = null;
+                    lastFunFiles.add(file);
+                }
 
-				while ((line = reader.readLine()) != null)
-				{
-					result.append(line);
-				}
-			}
-			
-			try (var reader = new BufferedReader(new InputStreamReader(process.getErrorStream())))
-			{
-				String line = null;
+                line = reader.readLine();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
 
-				while ((line = reader.readLine()) != null)
-				{
-					result.append(line);
-				}
-			}			
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
+            return null;
+        }
 
-//		System.out.println("[" + result + "]");
-		
-		return result.toString();
-	}
-	
-	protected static boolean isAd(Control control)
-	{
-		if (null == control)
-		{
-			return false;
-		}
-		
-		if (control.getSignature().contains("addview"))
-		{
-			return true;
-		}
-		else
-		{
-			return isAd(control.getParent());
-		}
-	}
-	
-	protected static void annotateDefectImage(State state, List<Control> controls)
-	{
-		var resultImage = new ResultImage(state.getImageFile());								
-		
-		for (var control : controls)
-		{
-			resultImage.drawBounds(control.getBounds());
-		}
-		
-		resultImage.save(Settings.debugFolder + "a_" + UUID.randomUUID().toString() + "1.png");
-	}
-	
-	private final String ruleCode;
-	private final long id;
+        if (!lastFunFiles.isEmpty()) {
+            return lastFunFiles;
+        } else {
+            return null;
+        }
+    }
 
-	@Override
-	public void addObserver(IObserver observer) {
-		_observers.add(observer);
-	}
+    protected static String executeShellCommand(String... command) {
+        var result = new StringBuilder("");
 
-	@Override
-	public void deleteObserver(IObserver observer) {
-		_observers.remove(observer);
-	}
+        try {
+            var process = Runtime
+                .getRuntime()
+                .exec(command, new String[]{"PYTHONIOENCODING=utf8"}, null);
 
-	@Override
-	public void notifyObservers() {
-		_observers.forEach(IObserver::notifyObserver);
-	}
+            try (var reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line = null;
+
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+            }
+
+            try (var reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                String line = null;
+
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        //		System.out.println("[" + result + "]");
+
+        return result.toString();
+    }
+
+    protected static boolean isAd(Control control) {
+        if (null == control) {
+            return false;
+        }
+
+        if (control
+            .getSignature()
+            .contains("addview")) {
+            return true;
+        } else {
+            return isAd(control.getParent());
+        }
+    }
+
+    protected static void annotateDefectImage(State state, List<Control> controls) {
+        var resultImage = new ResultImage(state.getImageFile());
+
+        for (var control : controls) {
+            resultImage.drawBounds(control.getBounds());
+        }
+
+        resultImage.save(Settings.debugFolder + "a_" + UUID
+            .randomUUID()
+            .toString() + "1.png");
+    }
+
+    private final String ruleCode;
+    private final long id;
+
+    @Override
+    public void addObserver(IObserver observer) {
+        _observers.add(observer);
+    }
+
+    @Override
+    public void deleteObserver(IObserver observer) {
+        _observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        _observers.forEach(IObserver::notifyObserver);
+    }
 }

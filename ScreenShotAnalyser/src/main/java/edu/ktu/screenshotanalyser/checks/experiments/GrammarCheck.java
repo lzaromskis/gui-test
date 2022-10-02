@@ -1,133 +1,140 @@
 package edu.ktu.screenshotanalyser.checks.experiments;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-import org.languagetool.Language;
-import edu.ktu.screenshotanalyser.checks.BaseTextRuleCheck;
-import edu.ktu.screenshotanalyser.checks.CheckResult;
-import edu.ktu.screenshotanalyser.checks.IAppRuleChecker;
-import edu.ktu.screenshotanalyser.checks.IStateRuleChecker;
-import edu.ktu.screenshotanalyser.checks.ResultsCollector;
+import edu.ktu.screenshotanalyser.checks.*;
 import edu.ktu.screenshotanalyser.context.AppContext;
 import edu.ktu.screenshotanalyser.context.State;
+import org.languagetool.Language;
 
-public class GrammarCheck extends BaseTextRuleCheck implements IStateRuleChecker, IAppRuleChecker
-{
-	public GrammarCheck()
-	{
-		super(2, "BadSpelling");
-	}
-	
-	@Override
-	public void analyze(State state, ResultsCollector failures)
-	{
-		var allTexts = state.getActualControls().stream().map(this::getText).collect(Collectors.joining(". "));
-		var ll = determineLanguageAll(allTexts);
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-		if (ll.isEmpty())
-		{
-			return;
-		}
+public class GrammarCheck extends BaseTextRuleCheck implements IStateRuleChecker, IAppRuleChecker {
+    public GrammarCheck() {
+        super(2, "BadSpelling");
+    }
 
-		for (var language : ll)
-		{
-			if (language.equals("lt"))
-			{
-				return;
-			}
-		}
+    @Override
+    public void analyze(State state, ResultsCollector failures) {
+        var allTexts = state
+            .getActualControls()
+            .stream()
+            .map(this::getText)
+            .collect(Collectors.joining(". "));
+        var ll = determineLanguageAll(allTexts);
 
-		var languages = new ArrayList<Language>();
+        if (ll.isEmpty()) {
+            return;
+        }
 
-		for (var q : ll)
-		{
-			languages.addAll(getLanguageByCode(q));
-		}
+        for (var language : ll) {
+            if (language.equals("lt")) {
+                return;
+            }
+        }
 
-		if (languages.isEmpty())
-		{
-			return;
-		}
+        var languages = new ArrayList<Language>();
 
-		// var messages = new ArrayList<String>();
+        for (var q : ll) {
+            languages.addAll(getLanguageByCode(q));
+        }
 
-		var mistypes = "";
-		var errors = "";
+        if (languages.isEmpty()) {
+            return;
+        }
 
-		for (var control : state.getActualControls())
-		{
-			if (null != control.getText() && control.getText().trim().length() > 0)
-			{
-				// messages.add(control.getText());
+        // var messages = new ArrayList<String>();
 
-				mistypes = isSpellingCorrect(state.getAppContext(), mistypes, languages, control.getText().trim(), false);
+        var mistypes = "";
+        var errors = "";
 
-				if ((mistypes != null) && (mistypes.length() > 0))
-				{
-					failures.addFailure(new CheckResult(state, this, mistypes, 1));
+        for (var control : state.getActualControls()) {
+            if (null != control.getText() && control
+                                                 .getText()
+                                                 .trim()
+                                                 .length() > 0) {
+                // messages.add(control.getText());
 
-					return;
-				}
-			}
+                mistypes = isSpellingCorrect(state.getAppContext(),
+                                             mistypes,
+                                             languages,
+                                             control
+                                                 .getText()
+                                                 .trim(),
+                                             false);
 
-			if (null != control.getContentDescription())
-			{
-				// messages.add(control.getContentDescription());
+                if ((mistypes != null) && (mistypes.length() > 0)) {
+                    failures.addFailure(new CheckResult(state, this, mistypes, 1));
 
-				if (null != control.getContentDescription() && control.getContentDescription().trim().length() > 0)
-				{
-					mistypes = isSpellingCorrect(state.getAppContext(), mistypes, languages, control.getContentDescription().trim(), false);
+                    return;
+                }
+            }
 
-					if ((mistypes != null) && (mistypes.length() > 0))
-					{
-						failures.addFailure(new CheckResult(state, this, mistypes, 1));
+            if (null != control.getContentDescription()) {
+                // messages.add(control.getContentDescription());
 
-						return;
-					}
-				}
-			}
-		}
+                if (null != control.getContentDescription() && control
+                                                                   .getContentDescription()
+                                                                   .trim()
+                                                                   .length() > 0) {
+                    mistypes = isSpellingCorrect(state.getAppContext(),
+                                                 mistypes,
+                                                 languages,
+                                                 control
+                                                     .getContentDescription()
+                                                     .trim(),
+                                                 false);
 
-		// for (var expected : messages)
-		// {
-		// mistypes = isSpellingCorrect(state.getAppContext(), mistypes, languages, expected);
-		//
-		// errors += " " + mistypes;
-		// errors = errors.trim();
-		// }
-		//
-		// if (errors.length() > 0)
-		// {
-		// failures.addFailure(new CheckResult(state, this, errors, errors.length()));
-		// }
-	}
+                    if ((mistypes != null) && (mistypes.length() > 0)) {
+                        failures.addFailure(new CheckResult(state, this, mistypes, 1));
 
-	@Override
-	public void analyze(AppContext appContext, ResultsCollector failures)
-	{
-		var messages = appContext.getMessages();
-		
-		if (null != messages)
-		{
-			var languages = messages.getLanguages().stream().sorted((x, y) -> x.length() - y.length()).collect(Collectors.toList()).toArray(new String[0]);
-		
-			for (var key : messages.getKeys())
-			{
-				for (var language : languages)
-				{
-					var errors = "";
-					var message = messages.getMessage(key, language).replace("%s", "");
-					var mistypes = isSpellingCorrect(appContext, "", getLanguageByCode(language), message, false);
-					
-					errors += " " + mistypes;
-					errors = errors.trim();		
-					
-					if (errors.length() > 0)
-					{
-						failures.addFailure(new CheckResult(appContext, this, errors));
-					}
-				}
-			}
-		}
-	}
+                        return;
+                    }
+                }
+            }
+        }
+
+        // for (var expected : messages)
+        // {
+        // mistypes = isSpellingCorrect(state.getAppContext(), mistypes, languages, expected);
+        //
+        // errors += " " + mistypes;
+        // errors = errors.trim();
+        // }
+        //
+        // if (errors.length() > 0)
+        // {
+        // failures.addFailure(new CheckResult(state, this, errors, errors.length()));
+        // }
+    }
+
+    @Override
+    public void analyze(AppContext appContext, ResultsCollector failures) {
+        var messages = appContext.getMessages();
+
+        if (null != messages) {
+            var languages = messages
+                .getLanguages()
+                .stream()
+                .sorted((x, y) -> x.length() - y.length())
+                .collect(Collectors.toList())
+                .toArray(new String[0]);
+
+            for (var key : messages.getKeys()) {
+                for (var language : languages) {
+                    var errors = "";
+                    var message = messages
+                        .getMessage(key, language)
+                        .replace("%s", "");
+                    var mistypes = isSpellingCorrect(appContext, "", getLanguageByCode(language), message, false);
+
+                    errors += " " + mistypes;
+                    errors = errors.trim();
+
+                    if (errors.length() > 0) {
+                        failures.addFailure(new CheckResult(appContext, this, errors));
+                    }
+                }
+            }
+        }
+    }
 }

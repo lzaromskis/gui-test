@@ -1,76 +1,65 @@
 package edu.ktu.screenshotanalyser.checks.experiments;
 
-import java.awt.ComponentOrientation;
+import edu.ktu.screenshotanalyser.checks.BaseTextRuleCheck;
+import edu.ktu.screenshotanalyser.checks.CheckResult;
+import edu.ktu.screenshotanalyser.checks.IStateRuleChecker;
+import edu.ktu.screenshotanalyser.checks.ResultsCollector;
+import edu.ktu.screenshotanalyser.context.Control;
+import edu.ktu.screenshotanalyser.context.State;
+import edu.ktu.screenshotanalyser.tools.StatisticsManager;
+import org.jetbrains.annotations.NotNull;
+import org.opencv.core.Core;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.OperatingSystemMXBean;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
-import org.languagetool.Language;
-import org.opencv.core.Core;
-import org.opencv.core.Rect;
-import edu.ktu.screenshotanalyser.checks.BaseRuleCheck;
-import edu.ktu.screenshotanalyser.checks.BaseTextRuleCheck;
-import edu.ktu.screenshotanalyser.checks.CheckResult;
-import edu.ktu.screenshotanalyser.checks.IStateRuleChecker;
-import edu.ktu.screenshotanalyser.checks.ResultImage;
-import edu.ktu.screenshotanalyser.checks.ResultsCollector;
-import edu.ktu.screenshotanalyser.context.Control;
-import edu.ktu.screenshotanalyser.context.State;
-import edu.ktu.screenshotanalyser.tools.Settings;
-import edu.ktu.screenshotanalyser.tools.StatisticsManager;
 
-public class UnalignedControlsCheck extends BaseTextRuleCheck implements IStateRuleChecker
-{
-	public UnalignedControlsCheck()
-	{
-		super(21, "Unaligned Controls");
-	}
+public class UnalignedControlsCheck extends BaseTextRuleCheck implements IStateRuleChecker {
+    public UnalignedControlsCheck() {
+        super(21, "Unaligned Controls");
+    }
 
-	public static void main(String[] args) throws IOException, SQLException
-	{
-//		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		
-//		var s = new State("AA", null, new File("E:\\gui\\_r\\c-2560x1080-fr\\lt.nordea.android\\states\\screen_2019-01-05_115204.png"), new File("E:\\gui\\_r\\c-2560x1080-fr\\lt.nordea.android\\states\\state_2019-01-05_115204.json"), null);
-		
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);						
-		
-		var db = new StatisticsManager();
-		var rule = new UnalignedControlsCheck();
-		var images = db.getList("select s.FileName from ScreenShot s LEFT join TestRunDefect d on d.ScreenShotId = s.Id WHERE d.TestRunId = 10316 and d.DefectTypeId <> 34");
-		
-		for (var image : images)
-		{
-			var file = "E:\\gui\\_r\\" + image;
-			var stateFile = "E:\\gui\\_r\\" + image.replace("\\screen_", "\\state_").replace(".png", ".json").replace(".jpg", ".json"); 
-			
-			var state = new State("AA", null, new File(file), new File(stateFile), null);
+    public static void main(String[] args) throws IOException, SQLException {
+        //		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-			rule.analyze(state, null);
-		}
-	}
-	
-	
-	@Override
-	public void analyze(State state, ResultsCollector failures)
-	{
-		if (true == checkVerticalAlingment(state, failures))
-		{
-			return;
-		}
+        //		var s = new State("AA", null, new File("E:\\gui\\_r\\c-2560x1080-fr\\lt.nordea.android\\states\\screen_2019-01-05_115204.png"), new File("E:\\gui\\_r\\c-2560x1080-fr\\lt.nordea.android\\states\\state_2019-01-05_115204.json"), null);
 
-		if (true == checkLabelAlignment(state, failures))
-		{
-			return;
-		}
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+        var db = new StatisticsManager();
+        var rule = new UnalignedControlsCheck();
+        var images = db.getList(
+            "select s.FileName from ScreenShot s LEFT join TestRunDefect d on d.ScreenShotId = s.Id WHERE d.TestRunId = 10316 and d.DefectTypeId <> 34");
+
+        for (var image : images) {
+            var file = "E:\\gui\\_r\\" + image;
+            var stateFile = "E:\\gui\\_r\\" + image
+                .replace("\\screen_", "\\state_")
+                .replace(".png", ".json")
+                .replace(".jpg", ".json");
+
+            var state = new State("AA", null, new File(file), new File(stateFile), null);
+
+            rule.analyze(state, null);
+        }
+    }
+
+
+    @Override
+    public void analyze(State state, ResultsCollector failures) {
+        if (true == checkVerticalAlingment(state, failures)) {
+            return;
+        }
+
+        if (true == checkLabelAlignment(state, failures)) {
+            return;
+        }
 		
 		/*
 		
@@ -227,379 +216,354 @@ public class UnalignedControlsCheck extends BaseTextRuleCheck implements IStateR
 		}
 		
 		*/
-	}
-	
-	private boolean isUseable(Control control)
-	{
-		if (false == isVisible(control))
-		{
-			return false;
-		}
+    }
 
-		if (control.getSignature().contains("Layout"))
-		{
-			return false;
-		}
+    private boolean isUseable(Control control) {
+        if (false == isVisible(control)) {
+            return false;
+        }
 
-		var type = control.getType() != null ? control.getType() : "";
+        if (control
+            .getSignature()
+            .contains("Layout")) {
+            return false;
+        }
 
-		if (type.contains("TextView"))
-		{
-			return control.getText() != null && control.getText().trim().length() > 0;
-		}
+        var type = control.getType() != null ? control.getType() : "";
 
-		return true;
-	}
-	
-	private boolean checkVerticalAlingment(State state, ResultsCollector failures)
-	{
-		float pixelScale = state.getImageSize().height / 1080.0f;
-		var centerYdelta = 50.0f * pixelScale;
-		var controls = state.getActualControls().stream().filter(p -> isUseable(p)).collect(Collectors.toList());
-		var defectiveControls = new HashSet<Control>();
+        if (type.contains("TextView")) {
+            return control.getText() != null && control
+                                                    .getText()
+                                                    .trim()
+                                                    .length() > 0;
+        }
 
-		for (var sourceControl : controls)
-		{
-			if (isEmpty(sourceControl, state.getImage()))
-			{
-				continue;
-			}
+        return true;
+    }
 
-			var nearbyControls = controls.stream().filter(p -> p.getParent() == sourceControl.getParent()).filter(p -> sourceControl != p && (isOnLeft(sourceControl, p, centerYdelta) || isOnRight(sourceControl, p, centerYdelta))).collect(Collectors.toList());
+    private boolean checkVerticalAlingment(State state, ResultsCollector failures) {
+        float pixelScale = state.getImageSize().height / 1080.0f;
+        var centerYdelta = 50.0f * pixelScale;
+        var controls = state
+            .getActualControls()
+            .stream()
+            .filter(p -> isUseable(p))
+            .collect(Collectors.toList());
+        var defectiveControls = new HashSet<Control>();
 
-			nearbyControls = nearbyControls.stream().filter(p -> Math.abs(p.getBounds().height - sourceControl.getBounds().height) < 10 * pixelScale).collect(Collectors.toList());
+        for (var sourceControl : controls) {
+            if (isEmpty(sourceControl, state.getImage())) {
+                continue;
+            }
 
-			var sourceControlCenterY = getCenterY(sourceControl);
+            var nearbyControls = controls
+                .stream()
+                .filter(p -> p.getParent() == sourceControl.getParent())
+                .filter(p -> sourceControl != p && (isOnLeft(sourceControl, p, centerYdelta) || isOnRight(sourceControl, p, centerYdelta)))
+                .collect(Collectors.toList());
 
-			Control nearest = null;
-			float minDeltaY = Integer.MAX_VALUE;
+            nearbyControls = nearbyControls
+                .stream()
+                .filter(p -> Math.abs(p.getBounds().height - sourceControl.getBounds().height) < 10 * pixelScale)
+                .collect(Collectors.toList());
 
-			for (var nc : nearbyControls)
-			{
-				var deltaY = Math.abs(getCenterY(nc) - sourceControlCenterY);
+            var sourceControlCenterY = getCenterY(sourceControl);
 
-				if (deltaY < minDeltaY)
-				{
-					if (false == isEmpty(nc, state.getImage()))
-					{
-						minDeltaY = deltaY;
-						nearest = nc;
-					}
-				}
-			}
+            Control nearest = null;
+            float minDeltaY = Integer.MAX_VALUE;
 
-			if (null != nearest)
-			{
-				if (minDeltaY > 3 * pixelScale)
-				{
-					defectiveControls.add(sourceControl);
-					defectiveControls.add(nearest);
+            for (var nc : nearbyControls) {
+                var deltaY = Math.abs(getCenterY(nc) - sourceControlCenterY);
 
-					if (null != failures)
-					{
-						failures.addFailure(new CheckResult(state, this, "unaligned vertically", 1));
-					}
+                if (deltaY < minDeltaY) {
+                    if (false == isEmpty(nc, state.getImage())) {
+                        minDeltaY = deltaY;
+                        nearest = nc;
+                    }
+                }
+            }
 
-					annotateDefectImage(state, defectiveControls.stream().collect(Collectors.toList()));
+            if (null != nearest) {
+                if (minDeltaY > 3 * pixelScale) {
+                    defectiveControls.add(sourceControl);
+                    defectiveControls.add(nearest);
 
-					return true;
-				}
-			}
-		}
+                    if (null != failures) {
+                        failures.addFailure(new CheckResult(state, this, "unaligned vertically", 1));
+                    }
 
-		return false;
-	}
-	
-	private boolean checkLabelAlignment(State state, ResultsCollector failures)
-	{
-		var allTexts = state.getActualControls().stream().map(this::getText).collect(Collectors.joining(". "));
-		var languages = determineLanguageAll(allTexts, 0.8f);
+                    annotateDefectImage(state,
+                                        defectiveControls
+                                            .stream()
+                                            .collect(Collectors.toList()));
 
-		if (0 == languages.size())
-		{
-			languages = determineLanguageShort(allTexts, 0.8f);
-		}
+                    return true;
+                }
+            }
+        }
 
-		if (languages.size() == 0)
-		{
-			return false;
-		}
+        return false;
+    }
 
-		var distinctLanguages = languages.stream().map(this::isRtl).distinct().collect(Collectors.toList());
+    private boolean checkLabelAlignment(State state, ResultsCollector failures) {
+        var allTexts = state
+            .getActualControls()
+            .stream()
+            .map(this::getText)
+            .collect(Collectors.joining(". "));
+        var languages = determineLanguageAll(allTexts, 0.8f);
 
-		if (distinctLanguages.size() > 1)
-		{
-			return false;
-		}
+        if (0 == languages.size()) {
+            languages = determineLanguageShort(allTexts, 0.8f);
+        }
 
-		var isRtl = distinctLanguages.get(0);
+        if (languages.size() == 0) {
+            return false;
+        }
 
-		var textFields = state.getActualControls().stream().filter(p -> p.getText() != null && p.getText().trim().length() > 0 && p.isVisible()).collect(Collectors.toList());
+        var distinctLanguages = languages
+            .stream()
+            .map(this::isRtl)
+            .distinct()
+            .collect(Collectors.toList());
 
-		var b1 = new ArrayList<Control>();
+        if (distinctLanguages.size() > 1) {
+            return false;
+        }
 
-		for (var t : textFields)
-		{
-			if ((t.getType() != null) && (t.getType().contains("Switch")))
-			{
-				continue;
-			}
+        var isRtl = distinctLanguages.get(0);
 
-			var txx = t.getText().trim();
+        var textFields = state
+            .getActualControls()
+            .stream()
+            .filter(p -> p.getText() != null && p
+                                                    .getText()
+                                                    .trim()
+                                                    .length() > 0 && p.isVisible())
+            .collect(Collectors.toList());
 
-			int letters = 0;
+        var b1 = new ArrayList<Control>();
 
-			for (int i = 0; i < txx.length(); i++)
-			{
-				if (Character.isAlphabetic(txx.charAt(i)))
-				{
-					letters++;
-				}
-			}
+        for (var t : textFields) {
+            if ((t.getType() != null) && (t
+                                              .getType()
+                                              .contains("Switch"))) {
+                continue;
+            }
 
-			if (letters == 0)
-			{
-				continue;
-			}
+            var txx = t
+                .getText()
+                .trim();
 
-			var r = t.getBounds();
+            int letters = 0;
 
-			if ((r.width > 5) && (r.height > 5))
-			{
-				var image = state.getImage();
+            for (int i = 0; i < txx.length(); i++) {
+                if (Character.isAlphabetic(txx.charAt(i))) {
+                    letters++;
+                }
+            }
 
-				if ((r.x >= image.getWidth()) || (r.y >= image.getHeight()) || (r.x + r.width >= image.getWidth()) || (r.y + r.height >= image.getHeight()))
-				{
-				}
-				else
-				{
-					image = image.getSubimage(r.x, r.y, r.width, r.height);
-					int leftMargin = getLeftMargin(image);
-					int rightMargin = getRightMargin(image);
+            if (letters == 0) {
+                continue;
+            }
 
-					if (!isRtl)
-					{
-						if (leftMargin > rightMargin)
-						{
-							float lp = (float) leftMargin / (float) image.getWidth();
-							float rp = (float) rightMargin / (float) image.getWidth();
+            var r = t.getBounds();
 
-							if ((lp > rp * 2) && (lp > 0.2))
-							{
-								b1.add(t);
+            if ((r.width > 5) && (r.height > 5)) {
+                var image = state.getImage();
 
-								if (((float) b1.size() / (float) textFields.size()) > 0.7)
-								{
-									annotateDefectImage(state, b1);
+                if ((r.x >= image.getWidth()) || (r.y >= image.getHeight()) || (r.x + r.width >= image.getWidth()) || (r.y + r.height >= image.getHeight())) {
+                } else {
+                    image = image.getSubimage(r.x, r.y, r.width, r.height);
+                    int leftMargin = getLeftMargin(image);
+                    int rightMargin = getRightMargin(image);
 
-									return true;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+                    if (!isRtl) {
+                        if (leftMargin > rightMargin) {
+                            float lp = (float) leftMargin / (float) image.getWidth();
+                            float rp = (float) rightMargin / (float) image.getWidth();
 
-		return false;
-	}
+                            if ((lp > rp * 2) && (lp > 0.2)) {
+                                b1.add(t);
 
-	private int getLeftMargin(BufferedImage image)
-	{
-		int c = image.getRGB(0, 0);
-		
-		for (int x = 0; x < image.getWidth(); x++)
-		{
-			for (int y = 0; y < image.getHeight(); y++)
-			{
-				if (c != image.getRGB(x, y))
-				{
-					return x;
-				}
-			}
-		}
-		
-		return image.getWidth();
-	}
-	
-	private int getRightMargin(BufferedImage image)
-	{
-		int c = image.getRGB(image.getWidth() - 1, 0);
-		
-		for (int x = image.getWidth() - 1; x >= 0; x--)
-		{
-			for (int y = 0; y < image.getHeight(); y++)
-			{
-				if (c != image.getRGB(x, y))
-				{
-					return image.getWidth() - x;
-				}
-			}
-		}
-		
-		return image.getWidth();
-	}
-	
-	private static boolean isEmpty(Control control, BufferedImage image)
-	{
-		var r = control.getBounds();
+                                if (((float) b1.size() / (float) textFields.size()) > 0.7) {
+                                    annotateDefectImage(state, b1);
 
-		if ((r.x >= image.getWidth()) || (r.y >= image.getHeight()) || (r.x + r.width >= image.getWidth()) || (r.y + r.height >= image.getHeight()))
-		{
-			return true;
-		}
-		
-		image = image.getSubimage(r.x, r.y, r.width, r.height);
-		
-		int c = image.getRGB(0, 0);
-		
-		for (int x = 0; x < image.getWidth(); x++)
-		{
-			for (int y = 0; y < image.getHeight(); y++)
-			{
-				if (c != image.getRGB(x, y))
-				{
-					return false;
-				}
-			}
-		}		
-		
-		return true;
-	}	
-		
-	private boolean isRtl(@NotNull String language)
-	{
-		return rtlLanguages.matcher(language).find();		
-	}
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-	private boolean isVisible(Control control)
-	{
-		return control.getBounds().width > 2 && control.getBounds().height > 2 && control.getBounds().x > 0 && control.getBounds().y > 0;
-	}
-	
-	private boolean isAligned(Control editField, Control label, boolean onlyLeft, boolean onlyRight)
-	{
-		if ((label.getBounds().x == editField.getBounds().x) && (label.getBounds().y == editField.getBounds().y))
-		{
-			return true;
-		}
-		
-		return isAlignedVertically(editField, label, onlyLeft, onlyRight);
-	}
-	
-	private boolean isAlignedVertically(Control editField, Control label, boolean onlyLeft, boolean onlyRight)
-	{
-		var onLeft = isOnLeft(editField, label, 10);
-		var onRight = isOnRight(editField, label, 10);
+        return false;
+    }
 
-		if (onLeft || onRight)
-		{
-			long editFieldCenterY = editField.getBounds().y + editField.getBounds().height / 2; 
-			long labelCenterY = label.getBounds().y + label.getBounds().height / 2;
+    private int getLeftMargin(BufferedImage image) {
+        int c = image.getRGB(0, 0);
+
+        for (int x = 0; x < image.getWidth(); x++) {
+            for (int y = 0; y < image.getHeight(); y++) {
+                if (c != image.getRGB(x, y)) {
+                    return x;
+                }
+            }
+        }
+
+        return image.getWidth();
+    }
+
+    private int getRightMargin(BufferedImage image) {
+        int c = image.getRGB(image.getWidth() - 1, 0);
+
+        for (int x = image.getWidth() - 1; x >= 0; x--) {
+            for (int y = 0; y < image.getHeight(); y++) {
+                if (c != image.getRGB(x, y)) {
+                    return image.getWidth() - x;
+                }
+            }
+        }
+
+        return image.getWidth();
+    }
+
+    private static boolean isEmpty(Control control, BufferedImage image) {
+        var r = control.getBounds();
+
+        if ((r.x >= image.getWidth()) || (r.y >= image.getHeight()) || (r.x + r.width >= image.getWidth()) || (r.y + r.height >= image.getHeight())) {
+            return true;
+        }
+
+        image = image.getSubimage(r.x, r.y, r.width, r.height);
+
+        int c = image.getRGB(0, 0);
+
+        for (int x = 0; x < image.getWidth(); x++) {
+            for (int y = 0; y < image.getHeight(); y++) {
+                if (c != image.getRGB(x, y)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isRtl(@NotNull String language) {
+        return rtlLanguages
+            .matcher(language)
+            .find();
+    }
+
+    private boolean isVisible(Control control) {
+        return control.getBounds().width > 2 && control.getBounds().height > 2 && control.getBounds().x > 0 && control.getBounds().y > 0;
+    }
+
+    private boolean isAligned(Control editField, Control label, boolean onlyLeft, boolean onlyRight) {
+        if ((label.getBounds().x == editField.getBounds().x) && (label.getBounds().y == editField.getBounds().y)) {
+            return true;
+        }
+
+        return isAlignedVertically(editField, label, onlyLeft, onlyRight);
+    }
+
+    private boolean isAlignedVertically(Control editField, Control label, boolean onlyLeft, boolean onlyRight) {
+        var onLeft = isOnLeft(editField, label, 10);
+        var onRight = isOnRight(editField, label, 10);
+
+        if (onLeft || onRight) {
+            long editFieldCenterY = editField.getBounds().y + editField.getBounds().height / 2;
+            long labelCenterY = label.getBounds().y + label.getBounds().height / 2;
 		
 /*			if (Math.abs(editFieldCenterY - labelCenterY) < 7)
 			{
 				return false;
 			}
 			else*/
-			{
-				return (onlyLeft && onLeft) || (onlyRight && onRight);
-			}
-		}
-		else
-		{
-			return true;
-		}
-	}	
-	
-	private Control getLabel(Control editField, List<Control> labelFilds)
-	{
-		var label = labelFilds.stream().filter(p -> isNearby(editField, p)).findFirst();
-		
-		if (false == label.isEmpty())
-		{
-			return label.get();
-		}
+            {
+                return (onlyLeft && onLeft) || (onlyRight && onRight);
+            }
+        } else {
+            return true;
+        }
+    }
 
-		return null;
-	}
+    private Control getLabel(Control editField, List<Control> labelFilds) {
+        var label = labelFilds
+            .stream()
+            .filter(p -> isNearby(editField, p))
+            .findFirst();
 
-	private boolean isNearby(Control editField, Control label)
-	{
-		return isOnLeft(editField, label, 10) || isOnRight(editField, label, 10) || isOnTop(editField, label);
-	}
-	
-	private boolean isOnLeft(Control editField, Control label, float centerYdelta)
-	{
-		if (Math.abs(editField.getBounds().y - label.getBounds().y) > centerYdelta)
-		{
-			return false;
-		}
-		
-		if (editField.getBounds().y >= label.getBounds().y + label.getBounds().height)
-		{
-			return false;
-		}
+        if (false == label.isEmpty()) {
+            return label.get();
+        }
 
-		if (editField.getBounds().y + editField.getBounds().height <= label.getBounds().y)
-		{
-			return false;
-		}
-		
-		if (label.getBounds().x + label.getBounds().width <= editField.getBounds().x)
-		{
-			return (editField.getBounds().x - label.getBounds().x - label.getBounds().width) < 50;
-		}
+        return null;
+    }
 
-		return false;
-	}
+    private boolean isNearby(Control editField, Control label) {
+        return isOnLeft(editField, label, 10) || isOnRight(editField, label, 10) || isOnTop(editField, label);
+    }
 
-	private boolean isOnRight(Control editField, Control label, float centerYdelta)
-	{
-		if (Math.abs(editField.getBounds().y - label.getBounds().y) > centerYdelta)
-		{
-			return false;
-		}
-		
-		if (editField.getBounds().y >= label.getBounds().y + label.getBounds().height)
-		{
-			return false;
-		}
+    private boolean isOnLeft(Control editField, Control label, float centerYdelta) {
+        if (Math.abs(editField.getBounds().y - label.getBounds().y) > centerYdelta) {
+            return false;
+        }
 
-		if (editField.getBounds().y + editField.getBounds().height <= label.getBounds().y)
-		{
-			return false;
-		}
-		
-		if (editField.getBounds().x + editField.getBounds().width <= label.getBounds().x)
-		{
-			return label.getBounds().x - editField.getBounds().x - editField.getBounds().width < 50;
-		}
-		
-		return false;		
-	}
+        if (editField.getBounds().y >= label.getBounds().y + label.getBounds().height) {
+            return false;
+        }
 
-	private boolean isOnTop(Control editField, Control label)
-	{
-		return false;
-	}
-	
-	private int getCenterY(Control control)
-	{
-		var r = control.getBounds();
-		
-		if (r.height > 2)
-		{
-			return r.y + r.height / 2;
-		}
-		
-		return -1;
-	}
-	
-	static
-	{
-		rtlLanguages = Pattern.compile("^(ar|dv|he|iw|fa|nqo|ps|sd|ug|ur|yi|.*[-_](Arab|Hebr|Thaa|Nkoo|Tfng))(?!.*[-_](Latn|Cyrl)($|-|_))($|-|_)");
-	}
-	
-	private static final Pattern rtlLanguages;
+        if (editField.getBounds().y + editField.getBounds().height <= label.getBounds().y) {
+            return false;
+        }
+
+        if (label.getBounds().x + label.getBounds().width <= editField.getBounds().x) {
+            return (editField.getBounds().x - label.getBounds().x - label.getBounds().width) < 50;
+        }
+
+        return false;
+    }
+
+    private boolean isOnRight(Control editField, Control label, float centerYdelta) {
+        if (Math.abs(editField.getBounds().y - label.getBounds().y) > centerYdelta) {
+            return false;
+        }
+
+        if (editField.getBounds().y >= label.getBounds().y + label.getBounds().height) {
+            return false;
+        }
+
+        if (editField.getBounds().y + editField.getBounds().height <= label.getBounds().y) {
+            return false;
+        }
+
+        if (editField.getBounds().x + editField.getBounds().width <= label.getBounds().x) {
+            return label.getBounds().x - editField.getBounds().x - editField.getBounds().width < 50;
+        }
+
+        return false;
+    }
+
+    private boolean isOnTop(Control editField, Control label) {
+        return false;
+    }
+
+    private int getCenterY(Control control) {
+        var r = control.getBounds();
+
+        if (r.height > 2) {
+            return r.y + r.height / 2;
+        }
+
+        return -1;
+    }
+
+    static {
+        rtlLanguages = Pattern.compile("^(ar|dv|he|iw|fa|nqo|ps|sd|ug|ur|yi|.*[-_](Arab|Hebr|Thaa|Nkoo|Tfng))(?!.*[-_](Latn|Cyrl)($|-|_))($|-|_)");
+    }
+
+    private static final Pattern rtlLanguages;
 }

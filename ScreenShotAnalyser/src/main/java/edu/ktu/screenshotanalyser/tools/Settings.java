@@ -2,11 +2,10 @@ package edu.ktu.screenshotanalyser.tools;
 
 import java.io.File;
 
-public class Settings
-{
-	public static final String appsFolder = "D:\\TestApps\\apps";
-	public static final File appImagesFolder = new File("D:\\TestData\\_Nexus_One_API_25");
-	public static final String debugFolder = "D:\\1";//"e:/1/";
+public class Settings {
+    public static final String appsFolder = "D:\\TestApps\\apps";
+    public static final File appImagesFolder = new File("D:\\TestData\\_Nexus_One_API_25");
+    public static final String debugFolder = "D:\\1";//"e:/1/";
 }
 
 
