@@ -55,9 +55,18 @@ public class ConfigurationTests {
 
         // Assert
         assertEquals(3, result.length);
-        assertTrue(Arrays.stream(result).toList().contains("rule1"));
-        assertTrue(Arrays.stream(result).toList().contains("rule2"));
-        assertTrue(Arrays.stream(result).toList().contains("rule3"));
+        assertTrue(Arrays
+                       .stream(result)
+                       .toList()
+                       .contains("rule1"));
+        assertTrue(Arrays
+                       .stream(result)
+                       .toList()
+                       .contains("rule2"));
+        assertTrue(Arrays
+                       .stream(result)
+                       .toList()
+                       .contains("rule3"));
     }
 
     @Test
@@ -207,6 +216,9 @@ public class ConfigurationTests {
     }
 
     private static String getAbsolutePath(String filename) {
-        return Paths.get("src", "test", "resources", "TestConfigurations", filename).toAbsolutePath().toString();
+        return Paths
+            .get("src", "test", "resources", "TestConfigurations", filename)
+            .toAbsolutePath()
+            .toString();
     }
 }

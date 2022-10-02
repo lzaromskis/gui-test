@@ -24,13 +24,15 @@ public class Configuration {
     }
 
     private void readConfiguration() throws IOException {
-        var path = Paths.get(_filename).toAbsolutePath();
+        var path = Paths
+            .get(_filename)
+            .toAbsolutePath();
         if (Files.notExists(path)) {
             throw new FileNotFoundException(String.format("Could not open configuration file. Make sure that file '%s' exists.", path));
         }
 
         var lines = Files.readAllLines(path);
-        for (var line: lines) {
+        for (var line : lines) {
             var trimmedLine = line.trim();
             if (trimmedLine.equals("") || trimmedLine.startsWith("#")) {
                 continue;
@@ -38,7 +40,8 @@ public class Configuration {
 
             var parts = line.split("=");
             if (parts.length != 2) {
-                throw new InvalidFileContentException(String.format("Found an invalid setting '%s'. Make sure that if follows 'key=value' format.", trimmedLine));
+                throw new InvalidFileContentException(String.format("Found an invalid setting '%s'. Make sure that if follows 'key=value' format.",
+                                                                    trimmedLine));
             }
 
             var trimmedKey = parts[0].trim();
@@ -57,8 +60,9 @@ public class Configuration {
     }
 
     public static void setFilename(String filename) throws IllegalStateException {
-        if (_instance != null)
+        if (_instance != null) {
             throw new IllegalStateException("Cannot set filename when configuration is already loaded.");
+        }
         _filename = filename;
     }
 
@@ -73,10 +77,11 @@ public class Configuration {
     public String[] getRuleCodes() throws MissingSettingException {
         var rulesString = getString("ruleCodes");
         var splitRules = rulesString.split(",");
-        return Arrays.stream(splitRules)
-                .map(String::trim)
-                .distinct()
-                .toArray(String[]::new);
+        return Arrays
+            .stream(splitRules)
+            .map(String::trim)
+            .distinct()
+            .toArray(String[]::new);
     }
 
     public String getAppsFolderPath() throws MissingSettingException {

@@ -1,5 +1,4 @@
 package edu.ktu.screenshotanalyser.checks.experiments.colors;
-import java.awt.image.BufferedImage;
 
 import edu.ktu.screenshotanalyser.checks.BaseRuleCheck;
 import edu.ktu.screenshotanalyser.checks.IStateRuleChecker;
@@ -14,6 +13,8 @@ import edu.ktu.screenshotanalyser.tools.colorcompatibility.NumberOfColorsInCombi
 import edu.ktu.screenshotanalyser.utils.methods.ImageUtils;
 import edu.ktu.screenshotanalyser.utils.models.PixelRGB;
 import org.jetbrains.annotations.TestOnly;
+
+import java.awt.image.BufferedImage;
 
 public class ColorCompatibilityCheck extends BaseRuleCheck implements IStateRuleChecker {
 
@@ -31,10 +32,9 @@ public class ColorCompatibilityCheck extends BaseRuleCheck implements IStateRule
 
     @TestOnly
     public ColorCompatibilityCheck(
-            IDominantColorProvider dominantColorProvider,
-            INumberOfColorsInCombinationProvider numberOfColorsInCombinationProvider,
-            ColorCompatibilityCalculatorProvider compatibilityCalculatorProvider
-    ) {
+        IDominantColorProvider dominantColorProvider,
+        INumberOfColorsInCombinationProvider numberOfColorsInCombinationProvider,
+        ColorCompatibilityCalculatorProvider compatibilityCalculatorProvider) {
         super(1010, "color_compat");
 
         _dominantColorProvider = dominantColorProvider;

@@ -1,61 +1,50 @@
 package edu.ktu.screenshotanalyser.tools;
 
-import java.awt.Color;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-//import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 import marvin.MarvinDefinitions;
 import marvin.image.MarvinImage;
 import marvin.image.MarvinSegment;
 import marvin.io.MarvinImageIO;
-import static marvin.MarvinPluginCollection.*;
+import org.opencv.core.Core;
+import org.opencv.core.Rect;
 
-public class ImageContoursProvider
-{
-	static
-	{
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		// strange...
-    MarvinDefinitions.setImagePluginPath("E:\\Projects\\eclipse\\prj346\\gui-test\\ScreenShotAnalyser\\lib\\marvin\\marvin\\plugins\\image\\");
-	}
+import java.awt.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-	
-	public List<Rect> getContours(File imageFile)
-	{
-		List<Rect> result = new ArrayList<>();
+import static marvin.MarvinPluginCollection.findTextRegions;
 
-		
-		MarvinImage image = MarvinImageIO.loadImage(imageFile.getAbsolutePath());
+public class ImageContoursProvider {
+    static {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        // strange...
+        MarvinDefinitions.setImagePluginPath("E:\\Projects\\eclipse\\prj346\\gui-test\\ScreenShotAnalyser\\lib\\marvin\\marvin\\plugins\\image\\");
+    }
 
 
-		List<MarvinSegment> segments = findText(image, 15, 8, 30, 150);
-		
-		for(MarvinSegment s:segments){
-			if(s.height >= 5){
-				
-				result.add(new Rect(s.x1, s.y1, s.width, s.height));
-				
-				s.y1-=5;
-				s.y2+=5;
-				image.drawRect(s.x1, s.y1, s.x2-s.x1, s.y2-s.y1, Color.red);
-				image.drawRect(s.x1+1, s.y1+1, (s.x2-s.x1)-2, (s.y2-s.y1)-2, Color.red);
-			}
-		}
-	
-		
-		
-		MarvinImageIO.saveImage(image, "d:/debug/" + imageFile.getName() + "-9.png");
+    public List<Rect> getContours(File imageFile) {
+        List<Rect> result = new ArrayList<>();
+
+
+        MarvinImage image = MarvinImageIO.loadImage(imageFile.getAbsolutePath());
+
+
+        List<MarvinSegment> segments = findText(image, 15, 8, 30, 150);
+
+        for (MarvinSegment s : segments) {
+            if (s.height >= 5) {
+
+                result.add(new Rect(s.x1, s.y1, s.width, s.height));
+
+                s.y1 -= 5;
+                s.y2 += 5;
+                image.drawRect(s.x1, s.y1, s.x2 - s.x1, s.y2 - s.y1, Color.red);
+                image.drawRect(s.x1 + 1, s.y1 + 1, (s.x2 - s.x1) - 2, (s.y2 - s.y1) - 2, Color.red);
+            }
+        }
+
+
+        MarvinImageIO.saveImage(image, "d:/debug/" + imageFile.getName() + "-9.png");
 		
 
 		
@@ -158,41 +147,22 @@ public class ImageContoursProvider
 		Imgcodecs.imwrite(outFile.getAbsolutePath(), mask);
 
 		*/
-		
-		
-		/////
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		return result;		
-	}
-	
-	
-	
-	public List<MarvinSegment> findText(MarvinImage image, int maxWhiteSpace, int maxFontLineWidth, int minTextWidth, int grayScaleThreshold){
-		List<MarvinSegment> segments = findTextRegions(image, maxWhiteSpace, maxFontLineWidth, minTextWidth, grayScaleThreshold);
-		
-		return segments;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+        /////
+
+
+        return result;
+    }
+
+
+    public List<MarvinSegment> findText(MarvinImage image, int maxWhiteSpace, int maxFontLineWidth, int minTextWidth, int grayScaleThreshold) {
+        List<MarvinSegment> segments = findTextRegions(image, maxWhiteSpace, maxFontLineWidth, minTextWidth, grayScaleThreshold);
+
+        return segments;
+    }
+
+
 }
 
 

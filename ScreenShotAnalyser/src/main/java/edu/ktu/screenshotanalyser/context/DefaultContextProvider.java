@@ -1,35 +1,31 @@
 package edu.ktu.screenshotanalyser.context;
 
+import edu.ktu.screenshotanalyser.checks.SystemContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import edu.ktu.screenshotanalyser.checks.SystemContext;
 
-public class DefaultContextProvider
-{
-	public DefaultContextProvider(File dataFolder) throws IOException
-	{
-		this.dataFolder = dataFolder;
-		this.systemContext = new SystemContext();
-		
-		for (var testDeviceFolder : this.dataFolder.listFiles(File::isDirectory))
-		{
-			if (new File(testDeviceFolder.getAbsoluteFile() + "/dev.txt").exists())
-			{
-				this.testDevices.add(new TestDevice(testDeviceFolder));
-			}
-		}
-	}
+public class DefaultContextProvider {
+    public DefaultContextProvider(File dataFolder) throws IOException {
+        this.dataFolder = dataFolder;
+        this.systemContext = new SystemContext();
 
-	public AppContext getContext(File appFolder) throws IOException
-	{
-		return new AppContext(appFolder, this.dataFolder, this.testDevices, this.systemContext);
-	}
+        for (var testDeviceFolder : this.dataFolder.listFiles(File::isDirectory)) {
+            if (new File(testDeviceFolder.getAbsoluteFile() + "/dev.txt").exists()) {
+                this.testDevices.add(new TestDevice(testDeviceFolder));
+            }
+        }
+    }
 
-	private final File dataFolder;
-	private final List<TestDevice> testDevices = new ArrayList<>();
-	private final SystemContext systemContext;
+    public AppContext getContext(File appFolder) throws IOException {
+        return new AppContext(appFolder, this.dataFolder, this.testDevices, this.systemContext);
+    }
+
+    private final File dataFolder;
+    private final List<TestDevice> testDevices = new ArrayList<>();
+    private final SystemContext systemContext;
 }
 
 

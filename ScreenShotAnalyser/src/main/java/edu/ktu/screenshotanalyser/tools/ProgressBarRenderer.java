@@ -14,13 +14,7 @@ public class ProgressBarRenderer implements IProgressBarRenderer {
     private int _previousActiveCellCount;
 
     public ProgressBarRenderer(
-            int barLength,
-            String leftBorder,
-            String rightBorder,
-            String fullCell,
-            String[] partialCells,
-            String emptyCell
-    ) {
+        int barLength, String leftBorder, String rightBorder, String fullCell, String[] partialCells, String emptyCell) {
         _barLength = barLength;
         _leftBorder = leftBorder;
         _rightBorder = rightBorder;
@@ -35,7 +29,7 @@ public class ProgressBarRenderer implements IProgressBarRenderer {
     @Override
     public String render(float progress) {
         var clampedProgress = MathUtils.clamp(progress, 0f, 1f);
-        var activeCellCount = Math.max((int)Math.ceil(clampedProgress * _barLength), 1);
+        var activeCellCount = Math.max((int) Math.ceil(clampedProgress * _barLength), 1);
 
         // Reset tick on active cell count change
         if (activeCellCount > _previousActiveCellCount) {
@@ -56,7 +50,7 @@ public class ProgressBarRenderer implements IProgressBarRenderer {
         }
 
         for (int i = 0; i < _barLength - activeCellCount; i++) {
-                builder.append(_emptyCell);
+            builder.append(_emptyCell);
         }
 
         builder.append(_rightBorder);

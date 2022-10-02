@@ -1,9 +1,5 @@
 package edu.ktu.screenshotanalyser.checks.experiments;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
 import com.aliasi.util.Pair;
 import com.github.pemistahl.lingua.api.Language;
 import edu.ktu.screenshotanalyser.checks.BaseTextRuleCheck;
@@ -13,151 +9,151 @@ import edu.ktu.screenshotanalyser.checks.ResultsCollector;
 import edu.ktu.screenshotanalyser.context.Control;
 import edu.ktu.screenshotanalyser.context.State;
 
-public class MixedLanguagesStateCheck extends BaseTextRuleCheck implements IStateRuleChecker
-{
-	public MixedLanguagesStateCheck()
-	{
-		super(7, "SL2");
-	}
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
-	@Override
-	public void analyze(State state, ResultsCollector failures)
-	{
-		var uniqueLanguages = new HashMap<Language, List<String>>();
-		var messages = state.getActualControls().stream().map(this::getText).filter(p -> isTranslateable(p, state.getAppContext())).map(message -> new Pair<>(message, determineLanguageShort(message))).collect(Collectors.toList());
+public class MixedLanguagesStateCheck extends BaseTextRuleCheck implements IStateRuleChecker {
+    public MixedLanguagesStateCheck() {
+        super(7, "SL2");
+    }
 
-		for (var message : messages)
-		{
-			for (var language : message.b().keySet())
-			{
-				var prob = message.b().get(language);
+    @Override
+    public void analyze(State state, ResultsCollector failures) {
+        var uniqueLanguages = new HashMap<Language, List<String>>();
+        var messages = state
+            .getActualControls()
+            .stream()
+            .map(this::getText)
+            .filter(p -> isTranslateable(p, state.getAppContext()))
+            .map(message -> new Pair<>(message, determineLanguageShort(message)))
+            .collect(Collectors.toList());
 
-				if (prob > 0.7)
-				{
-					if (uniqueLanguages.containsKey(language))
-					{
-						var m = uniqueLanguages.get(language);
+        for (var message : messages) {
+            for (var language : message
+                .b()
+                .keySet()) {
+                var prob = message
+                    .b()
+                    .get(language);
 
-						m.add(message.a());
+                if (prob > 0.7) {
+                    if (uniqueLanguages.containsKey(language)) {
+                        var m = uniqueLanguages.get(language);
 
-						uniqueLanguages.put(language, m);
-					}
-					else
-					{
-						var m = new ArrayList<String>();
+                        m.add(message.a());
 
-						m.add(message.a());
+                        uniqueLanguages.put(language, m);
+                    } else {
+                        var m = new ArrayList<String>();
 
-						uniqueLanguages.put(language, m);
-					}
-				}
-			}
-		}
+                        m.add(message.a());
 
-		for (var language : uniqueLanguages.keySet())
-		{
-			var languageMessages = uniqueLanguages.get(language);
+                        uniqueLanguages.put(language, m);
+                    }
+                }
+            }
+        }
 
-			if (languageMessages.size() == messages.size())
-			{
-				return;
-			}
-		}
+        for (var language : uniqueLanguages.keySet()) {
+            var languageMessages = uniqueLanguages.get(language);
 
-		var maxMessages = -1;
-		Language maxLangauge = null;
+            if (languageMessages.size() == messages.size()) {
+                return;
+            }
+        }
 
-		for (var language : uniqueLanguages.keySet())
-		{
-			var m = uniqueLanguages.get(language);
+        var maxMessages = -1;
+        Language maxLangauge = null;
 
-			if (m.size() >= maxMessages)
-			{
-				maxMessages = m.size();
-				maxLangauge = language;
-			}
-		}
+        for (var language : uniqueLanguages.keySet()) {
+            var m = uniqueLanguages.get(language);
 
-		var allFound = true;
-		var ok = uniqueLanguages.get(maxLangauge);
+            if (m.size() >= maxMessages) {
+                maxMessages = m.size();
+                maxLangauge = language;
+            }
+        }
 
-		for (var message : messages)
-		{
-			if (ok.contains(message.a()))
-			{
-				continue;
-			}
+        var allFound = true;
+        var ok = uniqueLanguages.get(maxLangauge);
 
-			if (false == isSpellingCorrect(maxLangauge.getIsoCode639_1().toString(), message.a(), state.getAppContext()))
-			{
-				allFound = false;
-				break;
-			}
-		}
+        for (var message : messages) {
+            if (ok.contains(message.a())) {
+                continue;
+            }
 
-		if (allFound)
-		{
-			return;
-		}
+            if (false == isSpellingCorrect(maxLangauge
+                                               .getIsoCode639_1()
+                                               .toString(), message.a(), state.getAppContext())) {
+                allFound = false;
+                break;
+            }
+        }
 
-		/*
-		 * //forEach(message -> mergeLanguages(message, uniqueLanguages)); if (uniqueLanguages.keySet().size() > 1) { var message = "multiple langauges: "; for (var key : uniqueLanguages.keySet()) { message += key + uniqueLanguages.get(key) + "; "; } failures.addFailure(new CheckResult(state, this, message, 1)); }
-		 */
+        if (allFound) {
+            return;
+        }
 
-		var error = "";
+        /*
+         * //forEach(message -> mergeLanguages(message, uniqueLanguages)); if (uniqueLanguages.keySet().size() > 1) { var message = "multiple langauges: "; for (var key : uniqueLanguages.keySet()) { message += key + uniqueLanguages.get(key) + "; "; } failures.addFailure(new CheckResult(state, this, message, 1)); }
+         */
 
-		for (var message : messages)
-		{
-			var maxScore = -1.0;
-			Language language = null;
+        var error = "";
 
-			for (var l : message.b().keySet())
-			{
-				var p = message.b().get(l);
+        for (var message : messages) {
+            var maxScore = -1.0;
+            Language language = null;
 
-				if (p >= maxScore)
-				{
-					language = l;
-					maxScore = p;
-				}
-			}
+            for (var l : message
+                .b()
+                .keySet()) {
+                var p = message
+                    .b()
+                    .get(l);
 
-			error += message.a().replace("\n", " ").replace("\r", " ") + "[" + language.getIsoCode639_1() + " " + maxScore + "] ";
-		}
+                if (p >= maxScore) {
+                    language = l;
+                    maxScore = p;
+                }
+            }
 
-		failures.addFailure(new CheckResult(state, this, error, 1));
-	}
+            error += message
+                         .a()
+                         .replace("\n", " ")
+                         .replace("\r", " ") + "[" + language.getIsoCode639_1() + " " + maxScore + "] ";
+        }
 
-	@Override
-	protected String getText(Control control)
-	{
-		var message = super.getText(control);
+        failures.addFailure(new CheckResult(state, this, error, 1));
+    }
 
-		message = message.trim();
+    @Override
+    protected String getText(Control control) {
+        var message = super.getText(control);
 
-		if (message.endsWith("."))
-		{
-			message = message.substring(0, message.length() - 1);
-		}
+        message = message.trim();
 
-		return message.trim();
-	}
+        if (message.endsWith(".")) {
+            message = message.substring(0, message.length() - 1);
+        }
 
-	private void mergeLanguages(String message, HashMap<String, String> uniqueLanguages)
-	{
-		var languages = determineLanguageShort(message);
+        return message.trim();
+    }
 
-		if (languages.size() == 0)
-		{
-			return;
-		}
+    private void mergeLanguages(String message, HashMap<String, String> uniqueLanguages) {
+        var languages = determineLanguageShort(message);
 
-		/*
-		 * var l = languages.get(0).getShortCode(); if (uniqueLanguages.containsKey(l)) { uniqueLanguages.put(l, uniqueLanguages.get(l) + "[" + message.replace("\n", "").replace("\r", "") + "]"); } else { uniqueLanguages.put(l, "[" + message.replace("\n", "").replace("\r", "") + "]"); }
-		 */
-	}
+        if (languages.size() == 0) {
+            return;
+        }
 
-	/*
-	 * protected synchronized static List<Language> getLanguageShort(String message) { String code = determineLanguageShort(message); // if (false == code.equals("en")) // { // return new ArrayList<>(); // } return getLanguageByCode(code); }
-	 */
+        /*
+         * var l = languages.get(0).getShortCode(); if (uniqueLanguages.containsKey(l)) { uniqueLanguages.put(l, uniqueLanguages.get(l) + "[" + message.replace("\n", "").replace("\r", "") + "]"); } else { uniqueLanguages.put(l, "[" + message.replace("\n", "").replace("\r", "") + "]"); }
+         */
+    }
+
+    /*
+     * protected synchronized static List<Language> getLanguageShort(String message) { String code = determineLanguageShort(message); // if (false == code.equals("en")) // { // return new ArrayList<>(); // } return getLanguageByCode(code); }
+     */
 }

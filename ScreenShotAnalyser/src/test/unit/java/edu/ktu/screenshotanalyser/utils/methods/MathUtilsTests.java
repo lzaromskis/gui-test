@@ -1,11 +1,9 @@
 package edu.ktu.screenshotanalyser.utils.methods;
 
-import edu.ktu.screenshotanalyser.utils.methods.MathUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
 
@@ -148,12 +146,7 @@ public class MathUtilsTests {
     }
 
     public static Stream<Arguments> circularDifferenceArgs() {
-        return Stream.of(
-            arguments(2f, 4f, 0f, 10f, 2f),
-            arguments(2f, 8f, 0f, 10f, 4f),
-            arguments(1f, 6f, 0f, 10f, 5f),
-            arguments(0f, 10f, 0f, 10f, 0f)
-        );
+        return Stream.of(arguments(2f, 4f, 0f, 10f, 2f), arguments(2f, 8f, 0f, 10f, 4f), arguments(1f, 6f, 0f, 10f, 5f), arguments(0f, 10f, 0f, 10f, 0f));
     }
 
     @Test

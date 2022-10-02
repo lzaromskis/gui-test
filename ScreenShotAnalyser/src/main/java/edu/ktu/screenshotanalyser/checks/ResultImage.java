@@ -1,68 +1,58 @@
 package edu.ktu.screenshotanalyser.checks;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
+import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+
+import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.File;
 
-public class ResultImage
-{
-	public ResultImage(File sourceImageFile)
-	{
-		this.image = Imgcodecs.imread(sourceImageFile.getAbsolutePath());
-	}
+public class ResultImage {
+    public ResultImage(File sourceImageFile) {
+        this.image = Imgcodecs.imread(sourceImageFile.getAbsolutePath());
+    }
 
-	public ResultImage(BufferedImage source)
-	{
-    var data = ((DataBufferByte)source.getRaster().getDataBuffer()).getData();
-    var mat = new Mat(source.getHeight(), source.getWidth(), CvType.CV_8UC3);
+    public ResultImage(BufferedImage source) {
+        var data = ((DataBufferByte) source
+            .getRaster()
+            .getDataBuffer()).getData();
+        var mat = new Mat(source.getHeight(), source.getWidth(), CvType.CV_8UC3);
 
-    mat.put(0, 0, data);
+        mat.put(0, 0, data);
 
-    this.image = mat;
-	}
-	
-	public void drawBounds(Rect bounds)
-	{
-		Imgproc.rectangle(this.image, bounds.br(), bounds.tl(), new Scalar(0, 255, 0), 2);
-	}
-	
-	public void drawBounds(Rect bounds, int r, int g, int b)
-	{
-		Imgproc.rectangle(this.image, bounds.br(), bounds.tl(), new Scalar(r, g, b), 2);
-	}	
-	
-	public void drawText(String text, Rect bounds)
-	{
-		if (text.length() > 0)
-		{
-			Imgproc.putText(this.image, text, bounds.tl(), Imgproc.FONT_ITALIC, 0.7, new Scalar(255));
-		}
-	}
+        this.image = mat;
+    }
 
-	public void save(String fileName)
-	{
-		File resultFile = new File(fileName);
+    public void drawBounds(Rect bounds) {
+        Imgproc.rectangle(this.image, bounds.br(), bounds.tl(), new Scalar(0, 255, 0), 2);
+    }
 
-		Imgcodecs.imwrite(resultFile.getAbsolutePath(), this.image);
-	}
-	
-	public byte[] encodeToPng()
-	{
-		var buffer = new MatOfByte();
+    public void drawBounds(Rect bounds, int r, int g, int b) {
+        Imgproc.rectangle(this.image, bounds.br(), bounds.tl(), new Scalar(r, g, b), 2);
+    }
 
-		Imgcodecs.imencode(".png", this.image, buffer);
-		
-		return buffer.toArray();		
-	}
+    public void drawText(String text, Rect bounds) {
+        if (text.length() > 0) {
+            Imgproc.putText(this.image, text, bounds.tl(), Imgproc.FONT_ITALIC, 0.7, new Scalar(255));
+        }
+    }
 
-	private final Mat image;
+    public void save(String fileName) {
+        File resultFile = new File(fileName);
+
+        Imgcodecs.imwrite(resultFile.getAbsolutePath(), this.image);
+    }
+
+    public byte[] encodeToPng() {
+        var buffer = new MatOfByte();
+
+        Imgcodecs.imencode(".png", this.image, buffer);
+
+        return buffer.toArray();
+    }
+
+    private final Mat image;
 }
 
 
