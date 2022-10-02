@@ -11,7 +11,10 @@ public class MonochromaticColorCompatibilityCalculator extends BaseColorCompatib
 
 	@Override
 	public float calculateCompatibility(PixelRGB[] colors) {
-		var colorsHsv = Arrays.stream(colors).map(PixelHSV::new).toArray(PixelHSV[]::new);
+		var colorsHsv = Arrays
+				.stream(colors)
+				.map(PixelHSV::new)
+				.toArray(PixelHSV[]::new);
 
 		var totalHue = 0f;
 		for (PixelHSV c : colorsHsv) {

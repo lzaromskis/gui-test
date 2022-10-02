@@ -17,7 +17,10 @@ public class ComplementaryColorCompatibilityCalculator extends BaseColorCompatib
 		if (colors.length != 2)
 			return 0f;
 
-		var colorsHsv = Arrays.stream(colors).map(PixelHSV::new).toArray(PixelHSV[]::new);
+		var colorsHsv = Arrays
+				.stream(colors)
+				.map(PixelHSV::new)
+				.toArray(PixelHSV[]::new);
 
 		var hueCoef = calculateHueCompatibility(colorsHsv[0], colorsHsv[1], EXPECTED_HUE_DIFFERENCE, MAX_HUE_DEVIATION);
 		if (MathUtils.equals(hueCoef, 0f))

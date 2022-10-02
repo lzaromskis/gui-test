@@ -165,7 +165,7 @@ public class MissingTextCheck extends BaseTextRuleCheck implements IStateRuleChe
 	
 	private String normalize(String source)
 	{
-		source = source.replace('�', '\'');
+		source = source.replace('’', '\'');
 		source = source.replace('\u00a0', ' ');
 		
 		return source;
@@ -660,7 +660,7 @@ public class MissingTextCheck extends BaseTextRuleCheck implements IStateRuleChe
 			return true;
 		}
 		
-		searchMessage = searchMessage.replace('�', ' ').replace('\n', ' ').replace('\r', ' ');
+		searchMessage = searchMessage.replace(' ', ' ').replace('\n', ' ').replace('\r', ' ');
 
 		String[] words = searchMessage.split("[ ]");
 		String[] targetWords = targetMessage.split("[ ]");

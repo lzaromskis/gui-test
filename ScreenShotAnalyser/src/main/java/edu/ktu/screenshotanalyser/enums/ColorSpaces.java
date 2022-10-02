@@ -41,7 +41,7 @@ public enum ColorSpaces {
                 return ACHROMATOPSIA;
             }
             default -> {
-                throw new IllegalArgumentException(String.format("Color combination '%s' does not exist.", value));
+                throw new IllegalArgumentException(String.format("Color space '%s' does not exist.", value));
             }
         }
     }
