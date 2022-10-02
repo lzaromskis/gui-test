@@ -16,7 +16,7 @@ import edu.ktu.screenshotanalyser.checks.experiments.UnlocalizedIconsCheck;
 import edu.ktu.screenshotanalyser.context.DefaultContextProvider;
 import edu.ktu.screenshotanalyser.context.State;
 import edu.ktu.screenshotanalyser.tools.Settings;
-import edu.ktu.screenshotanalyser.utils.Tuple;
+import edu.ktu.screenshotanalyser.utils.models.Tuple;
 
 public class DefectsAnnotationJob implements Runnable
 {

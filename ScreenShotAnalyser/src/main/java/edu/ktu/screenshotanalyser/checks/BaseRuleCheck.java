@@ -8,20 +8,23 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+
 import edu.ktu.screenshotanalyser.context.Control;
 import edu.ktu.screenshotanalyser.context.State;
+import edu.ktu.screenshotanalyser.tools.IObservable;
+import edu.ktu.screenshotanalyser.tools.IObserver;
 import edu.ktu.screenshotanalyser.tools.Settings;
 
-public abstract class BaseRuleCheck
+public abstract class BaseRuleCheck implements IObservable
 {
+	private final List<IObserver> _observers;
+
 	protected BaseRuleCheck(long id, String ruleCode)
 	{
 		this.id = id;
 		this.ruleCode = ruleCode;
+		this._observers = new LinkedList<>();
 	}
 	
 	public void logMessage(String message)
@@ -158,4 +161,19 @@ public abstract class BaseRuleCheck
 	
 	private final String ruleCode;
 	private final long id;
+
+	@Override
+	public void addObserver(IObserver observer) {
+		_observers.add(observer);
+	}
+
+	@Override
+	public void deleteObserver(IObserver observer) {
+		_observers.remove(observer);
+	}
+
+	@Override
+	public void notifyObservers() {
+		_observers.forEach(IObserver::notifyObserver);
+	}
 }

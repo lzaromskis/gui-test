@@ -1,5 +1,7 @@
 package edu.ktu.screenshotanalyser.tools;
 
+import edu.ktu.screenshotanalyser.enums.ColorCombinations;
+import edu.ktu.screenshotanalyser.enums.ColorSpaces;
 import edu.ktu.screenshotanalyser.exceptions.InvalidFileContentException;
 import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
 
@@ -69,11 +71,7 @@ public class Configuration {
     }
 
     public String[] getRuleCodes() throws MissingSettingException {
-        var rulesString = _configValues.get("ruleCodes");
-        if (rulesString == null) {
-            throw new MissingSettingException("Could not find value for 'ruleCodes'.");
-        }
-
+        var rulesString = getString("ruleCodes");
         var splitRules = rulesString.split(",");
         return Arrays.stream(splitRules)
                 .map(String::trim)
@@ -91,6 +89,21 @@ public class Configuration {
 
     public String getDebugFolderPath() throws MissingSettingException {
         return getString("debugFolderPath");
+    }
+
+    public ColorCombinations getColorCombination() throws MissingSettingException, IllegalArgumentException {
+        return ColorCombinations.parseString(getString("colorCombination"));
+    }
+
+    public ColorSpaces[] getColorSpaces() throws MissingSettingException, IllegalArgumentException {
+        var rawString = getString("colorSpaces");
+        return Arrays
+            .stream(rawString.split(","))
+            .map(String::trim)
+            .map(String::toLowerCase)
+            .distinct()
+            .map(ColorSpaces::parseString)
+            .toArray(ColorSpaces[]::new);
     }
 
     private String getString(String key) throws MissingSettingException {

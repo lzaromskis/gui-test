@@ -7,10 +7,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import edu.ktu.screenshotanalyser.checks.experiments.*;
-import edu.ktu.screenshotanalyser.tools.ColorSpace;
-import edu.ktu.screenshotanalyser.tools.ColorSpaceConverter;
-import edu.ktu.screenshotanalyser.tools.ConsoleOutput;
+import edu.ktu.screenshotanalyser.checks.experiments.colors.ColorCompatibilityCheck;
+import edu.ktu.screenshotanalyser.enums.ColorSpaces;
+import edu.ktu.screenshotanalyser.tools.*;
+import edu.ktu.screenshotanalyser.utils.methods.RGBUtils;
 import org.opencv.core.Core;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -19,9 +19,31 @@ import edu.ktu.screenshotanalyser.checks.AppChecker;
 import edu.ktu.screenshotanalyser.checks.DataBaseResultsCollector;
 import edu.ktu.screenshotanalyser.checks.ResultsCollector;
 import edu.ktu.screenshotanalyser.checks.RulesSetChecker;
-import edu.ktu.screenshotanalyser.tools.Settings;
 
 import javax.imageio.ImageIO;
+
+class QuickTest implements IObservable {
+
+	public QuickTest() {
+
+	}
+
+	@Override
+	public void addObserver(IObserver observer) {
+
+	}
+
+	@Override
+	public void deleteObserver(IObserver observer) {
+
+	}
+
+	@Override
+	public void notifyObservers() {
+
+	}
+}
+
 
 public class StartUp
 {
@@ -31,29 +53,92 @@ public class StartUp
 		
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);				
 	}
-	
+
 	public static void main(String[] args) throws IOException, InterruptedException
 	{
 		var output = new ConsoleOutput();
-		for (int i = 0; i < 5; i++) {
-			output.write(Integer.toString(i), true);
-			Thread.sleep(1000);
+
+		for (Integer i = -10; i < 265; i++) {
+			Float res = RGBUtils.toLinearRGBChannel(i);
+			output.write(i.toString() + " = " + res.toString());
 		}
 
+		for (Float j = -0.1f; j < 1.1f; j += 0.002f) {
+			Integer res = RGBUtils.toSRGBChannel(j);
+			output.write(j.toString() + " = " + res.toString());
+		}
+		/*
+		var r = new Random();
+
+		var renderer = new ProgressBarRenderer(
+				20,
+				"[",
+				"]",
+				"=",
+				new String[] {"-", "\\", "|", "/"},
+				" "
+		);
+
+		var imageCount = 47;
+		var rules = new QuickTest[] {
+				new QuickTest(),
+				new QuickTest(),
+				new QuickTest(),
+				new QuickTest()
+		};
+
+		var tracker = new ProgressTracker(renderer);
+		tracker.setOutput(output);
+		tracker.setExpectedImagesCount(imageCount);
+		tracker.setRuleChecks(rules);
+
+		for (int i = 0; i < imageCount * rules.length; i++) {
+			tracker.notifyObserver();
+
+			Thread.sleep((int)(r.nextFloat() * 750));
+		}
+*/
+	/*
+		output.write(renderer.render(0f));
+		output.write(renderer.render(0.2f));
+		output.write(renderer.render(0.4f));
+		output.write(renderer.render(0.4f));
+		output.write(renderer.render(0.4f));
+		output.write(renderer.render(0.4f));
+		output.write(renderer.render(0.4f));
+		output.write(renderer.render(0.4f));
+		output.write(renderer.render(0.6f));
+		output.write(renderer.render(0.8f));
+		output.write(renderer.render(1f));
+	 */
 		output.write("Starting...");
 		enableLogs();
-		BufferedImage img = ImageIO.read(new File("D:\\1\\test\\comp.png"));
+		BufferedImage img = ImageIO.read(new File("D:\\1\\test\\a_00.png"));
 		ColorSpaceConverter converter = new ColorSpaceConverter();
 
-		BufferedImage result = converter.convertImage(img, ColorSpace.PROTANOPIA);
-		ImageIO.write(result, "jpg", new File("D:\\1\\test\\protanopia.png"));
+		BufferedImage result = converter.convertImage(img, ColorSpaces.PROTANOPIA);
+		ImageIO.write(result, "png", new File("D:\\1\\test\\a_01.png"));
 
-		output.write("Running experiments...");
-		runExperiments();
-		ColorCompatibilityCheck check = new ColorCompatibilityCheck();
-		check.analyze(img, ColorCompatibilityCheck.ColorCombinations.COMPLEMENTARY, 2);
-		check.analyze(result, ColorCompatibilityCheck.ColorCombinations.COMPLEMENTARY, 2);
-		output.write("Finished experiments...");
+		result = converter.convertImage(img, ColorSpaces.DEUTERANOPIA);
+		ImageIO.write(result, "png", new File("D:\\1\\test\\a_02.png"));
+
+		result = converter.convertImage(img, ColorSpaces.TRITANOPIA);
+		ImageIO.write(result, "png", new File("D:\\1\\test\\a_03.png"));
+
+		result = converter.convertImage(img, ColorSpaces.ACHROMATOPSIA);
+		ImageIO.write(result, "png", new File("D:\\1\\test\\a_04.png"));
+
+		result = converter.convertImage(img, ColorSpaces.NORMAL);
+		ImageIO.write(result, "png", new File("D:\\1\\test\\a_05.png"));
+		output.write("Finished converting");
+		// output.write("Running experiments...");
+		// runExperiments();
+		// ColorCompatibilityCheck check = new ColorCompatibilityCheck();
+		// check.analyze(img, ColorCompatibilityCheck.ColorCombinations.COMPLEMENTARY, 2);
+		// check.analyze(result, ColorCompatibilityCheck.ColorCombinations.COMPLEMENTARY, 2);
+		// output.write("Finished experiments...");
+
+
 	}
 	
 	private static void runExperiments() throws IOException, InterruptedException

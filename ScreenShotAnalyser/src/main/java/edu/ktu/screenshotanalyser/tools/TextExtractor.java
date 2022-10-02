@@ -1,31 +1,19 @@
 package edu.ktu.screenshotanalyser.tools;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.color.ColorSpace;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
-import java.awt.image.ImageFilter;
-import java.awt.image.ImageProducer;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.swing.GrayFilter;
+
+import edu.ktu.screenshotanalyser.utils.methods.ImageUtils;
+import edu.ktu.screenshotanalyser.utils.methods.SystemUtils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
@@ -34,11 +22,9 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.slf4j.LoggerFactory;
 import net.sourceforge.tess4j.ITesseract;
-import net.sourceforge.tess4j.TessAPI1;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import net.sourceforge.tess4j.Word;
-import net.sourceforge.tess4j.util.LoggHelper;
 
 public class TextExtractor
 {

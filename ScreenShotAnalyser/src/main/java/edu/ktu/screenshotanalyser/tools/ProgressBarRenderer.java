@@ -1,5 +1,7 @@
 package edu.ktu.screenshotanalyser.tools;
 
+import edu.ktu.screenshotanalyser.utils.methods.MathUtils;
+
 public class ProgressBarRenderer implements IProgressBarRenderer {
     private final int _barLength;
     private final String _leftBorder;

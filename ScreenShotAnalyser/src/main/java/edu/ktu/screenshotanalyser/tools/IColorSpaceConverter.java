@@ -1,5 +1,7 @@
 package edu.ktu.screenshotanalyser.tools;
 
+import edu.ktu.screenshotanalyser.enums.ColorSpaces;
+
 import java.awt.image.BufferedImage;
 
 /**
@@ -12,5 +14,5 @@ public interface IColorSpaceConverter {
     @param colorSpace Color space to convert the image to.
     @returns Image that is converted to the specified color space.
      */
-    BufferedImage convertImage(BufferedImage image, ColorSpace colorSpace);
+    BufferedImage convertImage(BufferedImage image, ColorSpaces colorSpace);
 }
