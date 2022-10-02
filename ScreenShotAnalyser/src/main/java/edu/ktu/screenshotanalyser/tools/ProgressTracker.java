@@ -1,5 +1,6 @@
 package edu.ktu.screenshotanalyser.tools;
 
+import edu.ktu.screenshotanalyser.utils.methods.MathUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 public class ProgressTracker implements IObserver {

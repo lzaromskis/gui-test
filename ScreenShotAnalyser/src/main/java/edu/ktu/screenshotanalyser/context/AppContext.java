@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import edu.ktu.screenshotanalyser.checks.SystemContext;
-import edu.ktu.screenshotanalyser.tools.SystemUtils;
+import edu.ktu.screenshotanalyser.utils.methods.SystemUtils;
 import net.dongliu.apk.parser.ApkFile;
 
 public class AppContext

@@ -1,94 +1,74 @@
 package edu.ktu.screenshotanalyser.tools;
 
+import edu.ktu.screenshotanalyser.enums.ColorSpaces;
+import edu.ktu.screenshotanalyser.utils.models.Matrix3x3;
+import edu.ktu.screenshotanalyser.utils.models.PixelRGB;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 
+// Color matrices taken from: https://www.inf.ufrgs.br/%7Eoliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
 public class ColorSpaceConverter implements  IColorSpaceConverter {
+    private final static Matrix3x3 PROTANOPIA_MATRIX = new Matrix3x3(
+             0.152286f,  1.052583f, -0.204868f,
+             0.114503f,  0.786281f,  0.099216f,
+            -0.003882f, -0.048116f,  1.051998f
+    );
 
-    /// Based on https://github.com/DaltonLens/libDaltonLens/blob/master/libDaltonLens.c
+    private final static Matrix3x3 DEUTERANOPIA_MATRIX = new Matrix3x3(
+             0.367322f,  0.860646f, -0.227968f,
+             0.280085f,  0.672501f,  0.047413f,
+            -0.011820f,  0.042940f,  0.968881f
+    );
+
+    private final static Matrix3x3 TRITANOPIA_MATRIX = new Matrix3x3(
+             1.255528f, -0.076749f, -0.178779f,
+            -0.078411f,  0.930809f,  0.147602f,
+             0.004733f,  0.691367f,  0.303900f
+    );
+
+    private final static Matrix3x3 ACHROMATOPSIA_MATRIX = new Matrix3x3(
+            0.333333f, 0.333333f, 0.333333f,
+            0.333333f, 0.333333f, 0.333333f,
+            0.333333f, 0.333333f, 0.333333f
+    );
+
     @Override
-    public BufferedImage convertImage(BufferedImage image, ColorSpace colorSpace) {
-        return simulate_vienot1999(image, colorSpace);
-    }
-
-    private static float toLinearRGB(final int v) {
-        float fv = v / 255f;
-        if (fv < 0.04045f)
-            return fv / 12.92f;
-        return (float) Math.pow((fv + 0.055f) / 1.055f, 2.4f);
-    }
-
-    private static int toSRGB(final float v) {
-        if (v <= 0f)
-            return 0;
-        if (v >= 1f)
-            return 0xFF;
-        if (v < 0.0031308f)
-            return (int)(0.5f + (v * 12.92f * 255f));
-        return (int)(0f + 255f * ((float) Math.pow(v, 1f / 2.4f) * 1.055f - 0.055f)) & 0xFF;
-    }
-
-    private final class DLBrettel1997Params {
-        public final float[] rgbCvdFromRgb1;
-        public final float[] rgbCvdFromRgb2;
-        public final float[] separationPlaneNormalInRgb;
-
-        public DLBrettel1997Params(float[] rgbCvd1, float[] rgbCvd2, float[] separationPlaneNormal) {
-            rgbCvdFromRgb1 = rgbCvd1;
-            rgbCvdFromRgb2 = rgbCvd2;
-            separationPlaneNormalInRgb = separationPlaneNormal;
+    public BufferedImage convertImage(BufferedImage image, ColorSpaces colorSpace) {
+        switch (colorSpace) {
+            case NORMAL -> {
+                return image;
+            }
+            case PROTANOPIA -> {
+                return applyMatrix(image, PROTANOPIA_MATRIX);
+            }
+            case DEUTERANOPIA -> {
+                return applyMatrix(image, DEUTERANOPIA_MATRIX);
+            }
+            case TRITANOPIA -> {
+                return applyMatrix(image, TRITANOPIA_MATRIX);
+            }
+            case ACHROMATOPSIA -> {
+                return applyMatrix(image, ACHROMATOPSIA_MATRIX);
+            }
+            default -> {
+                throw new IllegalArgumentException(String.format("Unknown color space '%s'.", colorSpace));
+            }
         }
-
-        private final DLBrettel1997Params BRETTEL_PROTAN_PARAMS = new DLBrettel1997Params(
-                new float[] { 0.14980f,  1.19548f, -0.34528f,
-                        0.10764f,  0.84864f,  0.04372f,
-                        0.00384f, -0.00540f,  1.00156f },
-                new float[] { 0.14570f,  1.16172f, -0.30742f,
-                        0.10816f,  0.85291f,  0.03892f,
-                        0.00386f, -0.00524f,  1.00139f },
-                new float[] { 0.00048f,  0.00393f, -0.00441f });
     }
 
-    private static final float[] VienotProtanRgbCvdFromRgb = { 0.11238f,  0.88762f,  0.00000f,
-            0.11238f,  0.88762f, -0.00000f,
-            0.00401f, -0.00401f,  1.00000f};
-
-    private BufferedImage simulate_vienot1999 (BufferedImage srgbImage, ColorSpace colorSpace) {
-        int width = srgbImage.getWidth();
-        int height = srgbImage.getHeight();
-        BufferedImage resultImage = copyBufferedImage(srgbImage);
-        float[] params;
-        switch(colorSpace) {
-            case PROTANOPIA:
-                params = VienotProtanRgbCvdFromRgb;
-                break;
-            default:
-                params = new float[9];
-                break;
-        }
+    private BufferedImage applyMatrix(BufferedImage sRGBImage, Matrix3x3 matrix) {
+        var width = sRGBImage.getWidth();
+        var height = sRGBImage.getHeight();
+        var resultImage = copyBufferedImage(sRGBImage);
 
         for (int row = 0; row < height; row++) {
             for (int column = 0; column < width; column++) {
-                int rgb = srgbImage.getRGB(column, row);
-                float r = toLinearRGB((rgb >> 16) & 255);
-                float g = toLinearRGB((rgb >> 8) & 255);
-                float b = toLinearRGB(rgb & 255);
-
-                float rCvd = params[0] * r + params[1] * g + params[2] * b;
-                float gCvd = params[3] * r + params[4] * g + params[5] * b;
-                float bCvd = params[6] * r + params[7] * g + params[8] * b;
-
-                int rRes = toSRGB(rCvd);
-                int gRes = toSRGB(gCvd);
-                int bRes = toSRGB(bCvd);
-
-                rgb &= 0xFF000000;
-                rgb |= rRes << 16;
-                rgb |= gRes << 8;
-                rgb |= bRes;
-
-                resultImage.setRGB(column, row, rgb);
+                var sRGB = sRGBImage.getRGB(column, row);
+                var pixel = new PixelRGB(sRGB);
+                var convertedPixel = pixel.multiply(matrix);
+                resultImage.setRGB(column, row, convertedPixel.toSRGB());
             }
         }
 

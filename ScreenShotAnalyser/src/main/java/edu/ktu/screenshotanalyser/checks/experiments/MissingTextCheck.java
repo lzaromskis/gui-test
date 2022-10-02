@@ -10,11 +10,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import javax.imageio.ImageIO;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.opencv.core.Rect;
-import edu.ktu.screenshotanalyser.checks.BaseRuleCheck;
 import edu.ktu.screenshotanalyser.checks.BaseTextRuleCheck;
 import edu.ktu.screenshotanalyser.checks.CheckResult;
 import edu.ktu.screenshotanalyser.checks.IStateRuleChecker;
@@ -22,8 +20,6 @@ import edu.ktu.screenshotanalyser.checks.ResultImage;
 import edu.ktu.screenshotanalyser.checks.ResultsCollector;
 import edu.ktu.screenshotanalyser.context.Control;
 import edu.ktu.screenshotanalyser.context.State;
-import edu.ktu.screenshotanalyser.tools.Settings;
-import edu.ktu.screenshotanalyser.tools.SystemUtils;
 import edu.ktu.screenshotanalyser.tools.TextExtractor;
 
 public class MissingTextCheck extends BaseTextRuleCheck implements IStateRuleChecker
@@ -169,7 +165,7 @@ public class MissingTextCheck extends BaseTextRuleCheck implements IStateRuleChe
 	
 	private String normalize(String source)
 	{
-		source = source.replace('’', '\'');
+		source = source.replace('â€™', '\'');
 		source = source.replace('\u00a0', ' ');
 		
 		return source;
@@ -664,7 +660,7 @@ public class MissingTextCheck extends BaseTextRuleCheck implements IStateRuleChe
 			return true;
 		}
 		
-		searchMessage = searchMessage.replace(' ', ' ').replace('\n', ' ').replace('\r', ' ');
+		searchMessage = searchMessage.replace(' ', ' ').replace('\n', ' ').replace('\r', ' ');
 
 		String[] words = searchMessage.split("[ ]");
 		String[] targetWords = targetMessage.split("[ ]");
