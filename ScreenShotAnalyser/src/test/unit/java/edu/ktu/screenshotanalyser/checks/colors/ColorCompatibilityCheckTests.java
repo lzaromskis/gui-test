@@ -54,8 +54,6 @@ public class ColorCompatibilityCheckTests {
     @Mock
     private ResultsCollector resultsCollector;
 
-    private AutoCloseable mockInitialization;
-
     @SuppressWarnings("EmptyTryBlock")
     @BeforeEach
     public void beforeEach() throws Exception {
