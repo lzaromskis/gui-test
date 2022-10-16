@@ -8,6 +8,7 @@ import edu.ktu.screenshotanalyser.checks.experiments.MixedLanguagesStateCheck;
 import edu.ktu.screenshotanalyser.checks.experiments.UnlocalizedIconsCheck;
 import edu.ktu.screenshotanalyser.context.DefaultContextProvider;
 import edu.ktu.screenshotanalyser.context.State;
+import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
 import edu.ktu.screenshotanalyser.tools.Settings;
 import edu.ktu.screenshotanalyser.utils.models.Tuple;
 import org.opencv.core.Core;
@@ -45,6 +46,8 @@ public class DefectsAnnotationJob implements Runnable {
                 }
             } catch (InterruptedException | IOException ex) {
                 ex.printStackTrace();
+            } catch (MissingSettingException e) {
+                throw new RuntimeException(e);
             }
         }
     }

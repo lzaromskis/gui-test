@@ -1,0 +1,48 @@
+{
+  "stop_state": "fb101208aca3de781ae116ac1293f121", 
+  "event_str": "TouchEvent(state=fb101208aca3de781ae116ac1293f121, view=190846db2892a34a684e70c1dfa6cb58)", 
+  "tag": "2018-06-05_173810", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "android:id/alertTitle", 
+      "text": "Attention", 
+      "visible": true, 
+      "checkable": false, 
+      "children": [], 
+      "size": "360*41", 
+      "checked": false, 
+      "temp_id": 6, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.widget.TextView[resource_id]android:id/alertTitle", 
+      "is_password": false, 
+      "parent": 5, 
+      "focusable": false, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": false, 
+      "class": "android.widget.TextView", 
+      "scrollable": false, 
+      "package": "com.android.settings", 
+      "long_clickable": false, 
+      "view_str": "190846db2892a34a684e70c1dfa6cb58", 
+      "enabled": true, 
+      "bounds": [
+        [
+          60, 
+          318
+        ], 
+        [
+          420, 
+          359
+        ]
+      ], 
+      "signature": "[class]android.widget.TextView[resource_id]android:id/alertTitle[text]Attention[enabled,,]"
+    }
+  }, 
+  "start_state": "fb101208aca3de781ae116ac1293f121"
+}

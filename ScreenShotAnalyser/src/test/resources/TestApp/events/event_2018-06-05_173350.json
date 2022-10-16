@@ -1,0 +1,10 @@
+{
+  "stop_state": "e6be8390057f75de5da89e3078b48fff", 
+  "event_str": "KeyEvent(state=e6be8390057f75de5da89e3078b48fff, name=HOME)", 
+  "tag": "2018-06-05_173350", 
+  "event": {
+    "event_type": "key", 
+    "name": "HOME"
+  }, 
+  "start_state": "e6be8390057f75de5da89e3078b48fff"
+}

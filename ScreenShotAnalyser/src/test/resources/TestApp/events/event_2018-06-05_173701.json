@@ -1,0 +1,48 @@
+{
+  "stop_state": "7147dddca2df37e74a7ac4a0a273fbea", 
+  "event_str": "TouchEvent(state=fb101208aca3de781ae116ac1293f121, view=766e4e6e0127f31af9d9b225341f6f04)", 
+  "tag": "2018-06-05_173701", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "android:id/button2", 
+      "text": "CANCEL", 
+      "visible": true, 
+      "checkable": false, 
+      "children": [], 
+      "size": "116*72", 
+      "checked": false, 
+      "temp_id": 14, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.widget.Button[resource_id]android:id/button2", 
+      "is_password": false, 
+      "parent": 13, 
+      "focusable": true, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": true, 
+      "class": "android.widget.Button", 
+      "scrollable": false, 
+      "package": "com.android.settings", 
+      "long_clickable": false, 
+      "view_str": "766e4e6e0127f31af9d9b225341f6f04", 
+      "enabled": true, 
+      "bounds": [
+        [
+          226, 
+          466
+        ], 
+        [
+          342, 
+          538
+        ]
+      ], 
+      "signature": "[class]android.widget.Button[resource_id]android:id/button2[text]CANCEL[enabled,,]"
+    }
+  }, 
+  "start_state": "fb101208aca3de781ae116ac1293f121"
+}

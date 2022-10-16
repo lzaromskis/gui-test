@@ -1,0 +1,48 @@
+{
+  "stop_state": "7147dddca2df37e74a7ac4a0a273fbea", 
+  "event_str": "TouchEvent(state=7147dddca2df37e74a7ac4a0a273fbea, view=687a98278ebe07b877cfbbb27e3a95ce)", 
+  "tag": "2018-06-05_173926", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": null, 
+      "text": null, 
+      "visible": false, 
+      "checkable": false, 
+      "children": [], 
+      "size": "0*72", 
+      "checked": false, 
+      "temp_id": 9, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.widget.LinearLayout[resource_id]None", 
+      "is_password": false, 
+      "parent": 3, 
+      "focusable": false, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": false, 
+      "class": "android.widget.LinearLayout", 
+      "scrollable": false, 
+      "package": "com.fsck.k9", 
+      "long_clickable": false, 
+      "view_str": "687a98278ebe07b877cfbbb27e3a95ce", 
+      "enabled": true, 
+      "bounds": [
+        [
+          480, 
+          36
+        ], 
+        [
+          480, 
+          108
+        ]
+      ], 
+      "signature": "[class]android.widget.LinearLayout[resource_id]None[text]None[enabled,,]"
+    }
+  }, 
+  "start_state": "7147dddca2df37e74a7ac4a0a273fbea"
+}

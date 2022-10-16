@@ -1,5 +1,6 @@
 package edu.ktu.screenshotanalyser.tools;
 
+import edu.ktu.screenshotanalyser.test.helpers.ConfigurationHelper;
 import edu.ktu.screenshotanalyser.enums.ColorCombinations;
 import edu.ktu.screenshotanalyser.enums.ColorSpaces;
 import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
@@ -9,9 +10,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
+import static edu.ktu.screenshotanalyser.enums.RuleCheckCodes.COLOR_COMPATIBILITY_CHECK;
+import static edu.ktu.screenshotanalyser.enums.RuleCheckCodes.COLOR_READABILITY_CHECK;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ConfigurationTests {
@@ -22,10 +24,10 @@ public class ConfigurationTests {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"ok.config", "empty.config"})
+    @ValueSource(strings = {"OK.config", "Unit/Configuration/Empty.config"})
     public void instance_Ok(String filename) throws IOException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath(filename));
+        ConfigurationHelper.SetupConfigurationFile(filename);
 
         // Act
         var result = Configuration.instance();
@@ -35,10 +37,10 @@ public class ConfigurationTests {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"does_not_exist.config", "missing_equals.config", "multiple_equals.config", "duplicate_setting.config"})
+    @ValueSource(strings = {"Unit/Configuration/does_not_exist.config", "Unit/Configuration/MissingEquals.config", "Unit/Configuration/MultipleEquals.config", "Unit/Configuration/DuplicateSetting.config"})
     public void instance_ThrowsException(String filename) {
         // Arrange
-        Configuration.setFilename(getAbsolutePath(filename));
+        ConfigurationHelper.SetupConfigurationFile(filename);
 
         // Act & Assert
         assertThrows(IOException.class, Configuration::instance);
@@ -47,32 +49,28 @@ public class ConfigurationTests {
     @Test
     public void getRulesCodes_ReturnsRuleCodes() throws IOException, MissingSettingException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("ok.config"));
+        ConfigurationHelper.SetupConfigurationFile("OK.config");
         var config = Configuration.instance();
 
         // Act
         var result = config.getRuleCodes();
 
         // Assert
-        assertEquals(3, result.length);
+        assertEquals(2, result.length);
         assertTrue(Arrays
                        .stream(result)
                        .toList()
-                       .contains("rule1"));
+                       .contains(COLOR_COMPATIBILITY_CHECK));
         assertTrue(Arrays
                        .stream(result)
                        .toList()
-                       .contains("rule2"));
-        assertTrue(Arrays
-                       .stream(result)
-                       .toList()
-                       .contains("rule3"));
+                       .contains(COLOR_READABILITY_CHECK));
     }
 
     @Test
     public void getRulesCodes_NoSetting_ThrowsException() throws IOException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("empty.config"));
+        ConfigurationHelper.SetupConfigurationFile("Unit/Configuration/Empty.config");
         var config = Configuration.instance();
 
         // Act & Assert
@@ -80,9 +78,19 @@ public class ConfigurationTests {
     }
 
     @Test
+    public void getRulesCodes_InvalidSetting_ThrowsIllegalArgumentException() throws IOException {
+        // Arrange
+        ConfigurationHelper.SetupConfigurationFile("Unit/Configuration/BadRuleCode.config");
+        var config = Configuration.instance();
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, config::getRuleCodes);
+    }
+
+    @Test
     public void getAppsFolderPath_ReturnsSettingValue() throws IOException, MissingSettingException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("ok.config"));
+        ConfigurationHelper.SetupConfigurationFile("OK.config");
         var config = Configuration.instance();
 
         // Act
@@ -95,7 +103,7 @@ public class ConfigurationTests {
     @Test
     public void getAppsFolderPath_NoSetting_ThrowsException() throws IOException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("empty.config"));
+        ConfigurationHelper.SetupConfigurationFile("Unit/Configuration/Empty.config");
         var config = Configuration.instance();
 
         // Act & Assert
@@ -105,7 +113,7 @@ public class ConfigurationTests {
     @Test
     public void getAppImagesFolderPath_ReturnsSettingValue() throws IOException, MissingSettingException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("ok.config"));
+        ConfigurationHelper.SetupConfigurationFile("OK.config");
         var config = Configuration.instance();
 
         // Act
@@ -118,7 +126,7 @@ public class ConfigurationTests {
     @Test
     public void getAppImagesFolderPath_NoSetting_ThrowsException() throws IOException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("empty.config"));
+        ConfigurationHelper.SetupConfigurationFile("Unit/Configuration/Empty.config");
         var config = Configuration.instance();
 
         // Act & Assert
@@ -128,7 +136,7 @@ public class ConfigurationTests {
     @Test
     public void getDebugFolderPath_ReturnsSettingValue() throws IOException, MissingSettingException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("ok.config"));
+        ConfigurationHelper.SetupConfigurationFile("OK.config");
         var config = Configuration.instance();
 
         // Act
@@ -141,7 +149,7 @@ public class ConfigurationTests {
     @Test
     public void getDebugFolderPath_NoSetting_ThrowsException() throws IOException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("empty.config"));
+        ConfigurationHelper.SetupConfigurationFile("Unit/Configuration/Empty.config");
         var config = Configuration.instance();
 
         // Act & Assert
@@ -151,7 +159,7 @@ public class ConfigurationTests {
     @Test
     public void getColorCombination_ReturnColorCombination() throws IOException, MissingSettingException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("ok.config"));
+        ConfigurationHelper.SetupConfigurationFile("OK.config");
         var config = Configuration.instance();
 
         // Act & Assert
@@ -161,7 +169,7 @@ public class ConfigurationTests {
     @Test
     public void getColorCombination_NoSetting_ThrowsMissingSettingException() throws IOException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("empty.config"));
+        ConfigurationHelper.SetupConfigurationFile("Unit/Configuration/Empty.config");
         var config = Configuration.instance();
 
         // Act & Assert
@@ -171,7 +179,7 @@ public class ConfigurationTests {
     @Test
     public void getColorCombination_InvalidSetting_ThrowsIllegalArgumentException() throws IOException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("bad_color_combination.config"));
+        ConfigurationHelper.SetupConfigurationFile("Unit/Configuration/BadColorCombination.config");
         var config = Configuration.instance();
 
         // Act & Assert
@@ -181,7 +189,7 @@ public class ConfigurationTests {
     @Test
     public void getColorSpaces_ReturnColorSpaces() throws IOException, MissingSettingException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("ok.config"));
+        ConfigurationHelper.SetupConfigurationFile("OK.config");
         var config = Configuration.instance();
 
         // Act
@@ -198,7 +206,7 @@ public class ConfigurationTests {
     @Test
     public void getColorSpaces_NoSetting_ThrowsMissingSettingException() throws IOException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("empty.config"));
+        ConfigurationHelper.SetupConfigurationFile("Unit/Configuration/Empty.config");
         var config = Configuration.instance();
 
         // Act & Assert
@@ -208,17 +216,10 @@ public class ConfigurationTests {
     @Test
     public void getColorSpaces_InvalidSetting_ThrowsIllegalArgumentException() throws IOException {
         // Arrange
-        Configuration.setFilename(getAbsolutePath("bad_color_spaces.config"));
+        ConfigurationHelper.SetupConfigurationFile("Unit/Configuration/BadColorSpaces.config");
         var config = Configuration.instance();
 
         // Act & Assert
         assertThrows(IllegalArgumentException.class, config::getColorSpaces);
-    }
-
-    private static String getAbsolutePath(String filename) {
-        return Paths
-            .get("src", "test", "resources", "TestConfigurations", filename)
-            .toAbsolutePath()
-            .toString();
     }
 }

@@ -1,0 +1,48 @@
+{
+  "stop_state": "a98c0e55081d3a2b9818bdc773f6760d", 
+  "event_str": "TouchEvent(state=d6f078de8e3aea6ebb8ccba8c9607e35, view=3c1149718f0f5e608d77386baa4cd2ee)", 
+  "tag": "2018-06-05_173408", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "com.fsck.k9:id/next", 
+      "text": "Next", 
+      "visible": true, 
+      "checkable": false, 
+      "children": [], 
+      "size": "240*72", 
+      "checked": false, 
+      "temp_id": 19, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.widget.Button[resource_id]com.fsck.k9:id/next", 
+      "is_password": false, 
+      "parent": 17, 
+      "focusable": true, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": true, 
+      "class": "android.widget.Button", 
+      "scrollable": false, 
+      "package": "com.fsck.k9", 
+      "long_clickable": false, 
+      "view_str": "3c1149718f0f5e608d77386baa4cd2ee", 
+      "enabled": true, 
+      "bounds": [
+        [
+          240, 
+          728
+        ], 
+        [
+          480, 
+          800
+        ]
+      ], 
+      "signature": "[class]android.widget.Button[resource_id]com.fsck.k9:id/next[text]Next[enabled,,]"
+    }
+  }, 
+  "start_state": "d6f078de8e3aea6ebb8ccba8c9607e35"
+}

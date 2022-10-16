@@ -20,7 +20,8 @@ public enum ColorSpaces {
     /**
      * Blind to all colors, sees in grayscale
      */
-    ACHROMATOPSIA;
+    ACHROMATOPSIA
+    ;
 
     public static ColorSpaces parseString(String value) {
         var lower = value.toLowerCase();

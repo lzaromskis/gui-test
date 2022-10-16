@@ -1,0 +1,48 @@
+{
+  "stop_state": "fb101208aca3de781ae116ac1293f121", 
+  "event_str": "TouchEvent(state=7147dddca2df37e74a7ac4a0a273fbea, view=94c8b864d376c2e09922931d9f32564d)", 
+  "tag": "2018-06-05_173741", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "com.fsck.k9:id/client_certificate_spinner_button", 
+      "text": "No client certificate", 
+      "visible": true, 
+      "checkable": false, 
+      "children": [], 
+      "size": "375*72", 
+      "checked": false, 
+      "temp_id": 16, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.widget.Button[resource_id]com.fsck.k9:id/client_certificate_spinner_button", 
+      "is_password": false, 
+      "parent": 15, 
+      "focusable": true, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": true, 
+      "class": "android.widget.Button", 
+      "scrollable": false, 
+      "package": "com.fsck.k9", 
+      "long_clickable": false, 
+      "view_str": "94c8b864d376c2e09922931d9f32564d", 
+      "enabled": true, 
+      "bounds": [
+        [
+          9, 
+          350
+        ], 
+        [
+          384, 
+          422
+        ]
+      ], 
+      "signature": "[class]android.widget.Button[resource_id]com.fsck.k9:id/client_certificate_spinner_button[text]No client certificate[enabled,,]"
+    }
+  }, 
+  "start_state": "7147dddca2df37e74a7ac4a0a273fbea"
+}

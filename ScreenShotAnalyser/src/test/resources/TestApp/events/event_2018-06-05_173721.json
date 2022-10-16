@@ -1,0 +1,48 @@
+{
+  "stop_state": "87635cebcbff3a80f1e24000ea5038ab", 
+  "event_str": "TouchEvent(state=7147dddca2df37e74a7ac4a0a273fbea, view=7972c4a355455fccc78a39e55c08948b)", 
+  "tag": "2018-06-05_173721", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": "Remove client certificate selection", 
+      "resource_id": "com.fsck.k9:id/client_certificate_spinner_delete", 
+      "text": null, 
+      "visible": true, 
+      "checkable": false, 
+      "children": [], 
+      "size": "72*72", 
+      "checked": false, 
+      "temp_id": 17, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.widget.ImageButton[resource_id]com.fsck.k9:id/client_certificate_spinner_delete", 
+      "is_password": false, 
+      "parent": 15, 
+      "focusable": true, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": true, 
+      "class": "android.widget.ImageButton", 
+      "scrollable": false, 
+      "package": "com.fsck.k9", 
+      "long_clickable": false, 
+      "view_str": "7972c4a355455fccc78a39e55c08948b", 
+      "enabled": true, 
+      "bounds": [
+        [
+          384, 
+          350
+        ], 
+        [
+          456, 
+          422
+        ]
+      ], 
+      "signature": "[class]android.widget.ImageButton[resource_id]com.fsck.k9:id/client_certificate_spinner_delete[text]None[enabled,,]"
+    }
+  }, 
+  "start_state": "7147dddca2df37e74a7ac4a0a273fbea"
+}

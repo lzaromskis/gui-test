@@ -2,47 +2,19 @@ package edu.ktu.screenshotanalyser;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import edu.ktu.screenshotanalyser.checks.AppChecker;
-import edu.ktu.screenshotanalyser.checks.DataBaseResultsCollector;
-import edu.ktu.screenshotanalyser.checks.ResultsCollector;
-import edu.ktu.screenshotanalyser.checks.RulesSetChecker;
+import edu.ktu.screenshotanalyser.checks.*;
 import edu.ktu.screenshotanalyser.checks.experiments.colors.ColorCompatibilityCheck;
-import edu.ktu.screenshotanalyser.enums.ColorSpaces;
+import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
 import edu.ktu.screenshotanalyser.tools.*;
-import edu.ktu.screenshotanalyser.utils.methods.RGBUtils;
+import edu.ktu.screenshotanalyser.utils.helpers.FileExplorerHelper;
 import org.opencv.core.Core;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-class QuickTest implements IObservable {
-
-    public QuickTest() {
-
-    }
-
-    @Override
-    public void addObserver(IObserver observer) {
-
-    }
-
-    @Override
-    public void deleteObserver(IObserver observer) {
-
-    }
-
-    @Override
-    public void notifyObservers() {
-
-    }
-}
-
 
 public class StartUp {
     static {
@@ -51,118 +23,46 @@ public class StartUp {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        var output = new ConsoleOutput();
+    public static void main(String[] args) throws IOException, InterruptedException, MissingSettingException {
+        var output = ConsoleOutput.instance();
 
-        for (Integer i = -10; i < 265; i++) {
-            Float res = RGBUtils.toLinearRGBChannel(i);
-            output.write(i.toString() + " = " + res.toString());
-        }
-
-        for (Float j = -0.1f; j < 1.1f; j += 0.002f) {
-            Integer res = RGBUtils.toSRGBChannel(j);
-            output.write(j.toString() + " = " + res.toString());
-        }
-		/*
-		var r = new Random();
-
-		var renderer = new ProgressBarRenderer(
-				20,
-				"[",
-				"]",
-				"=",
-				new String[] {"-", "\\", "|", "/"},
-				" "
-		);
-
-		var imageCount = 47;
-		var rules = new QuickTest[] {
-				new QuickTest(),
-				new QuickTest(),
-				new QuickTest(),
-				new QuickTest()
-		};
-
-		var tracker = new ProgressTracker(renderer);
-		tracker.setOutput(output);
-		tracker.setExpectedImagesCount(imageCount);
-		tracker.setRuleChecks(rules);
-
-		for (int i = 0; i < imageCount * rules.length; i++) {
-			tracker.notifyObserver();
-
-			Thread.sleep((int)(r.nextFloat() * 750));
-		}
-*/
-	/*
-		output.write(renderer.render(0f));
-		output.write(renderer.render(0.2f));
-		output.write(renderer.render(0.4f));
-		output.write(renderer.render(0.4f));
-		output.write(renderer.render(0.4f));
-		output.write(renderer.render(0.4f));
-		output.write(renderer.render(0.4f));
-		output.write(renderer.render(0.4f));
-		output.write(renderer.render(0.6f));
-		output.write(renderer.render(0.8f));
-		output.write(renderer.render(1f));
-	 */
-        output.write("Starting...");
-        enableLogs();
-        BufferedImage img = ImageIO.read(new File("D:\\1\\test\\a_00.png"));
-        ColorSpaceConverter converter = new ColorSpaceConverter();
-
-        BufferedImage result = converter.convertImage(img, ColorSpaces.PROTANOPIA);
-        ImageIO.write(result, "png", new File("D:\\1\\test\\a_01.png"));
-
-        result = converter.convertImage(img, ColorSpaces.DEUTERANOPIA);
-        ImageIO.write(result, "png", new File("D:\\1\\test\\a_02.png"));
-
-        result = converter.convertImage(img, ColorSpaces.TRITANOPIA);
-        ImageIO.write(result, "png", new File("D:\\1\\test\\a_03.png"));
-
-        result = converter.convertImage(img, ColorSpaces.ACHROMATOPSIA);
-        ImageIO.write(result, "png", new File("D:\\1\\test\\a_04.png"));
-
-        result = converter.convertImage(img, ColorSpaces.NORMAL);
-        ImageIO.write(result, "png", new File("D:\\1\\test\\a_05.png"));
-        output.write("Finished converting");
-        // output.write("Running experiments...");
-        // runExperiments();
-        // ColorCompatibilityCheck check = new ColorCompatibilityCheck();
-        // check.analyze(img, ColorCompatibilityCheck.ColorCombinations.COMPLEMENTARY, 2);
-        // check.analyze(result, ColorCompatibilityCheck.ColorCombinations.COMPLEMENTARY, 2);
-        // output.write("Finished experiments...");
+        var rules = new BaseRuleCheck[] {new ColorCompatibilityCheck()};
+        var renderer = new ProgressBarRenderer(
+            20,
+            "[",
+            "]",
+            "=",
+            new String[] {"-", "\\", "|", "/"},
+            " "
+        );
+        var progressTracker = new ProgressTracker(
+            renderer,
+            rules,
+            FileExplorerHelper.getAllAppDirectories().length,
+            FileExplorerHelper.getAllStateImageFiles().length,
+            output
+        );
+        output.write("Running experiments...");
+        progressTracker.writeProgress();
+        runExperiments(rules);
+        output.write("Finished experiments...");
 
 
     }
 
-    private static void runExperiments() throws IOException, InterruptedException {
+    private static void runExperiments(BaseRuleCheck[] rules) throws IOException, InterruptedException, MissingSettingException {
         var failures = new DataBaseResultsCollector("defects-db", false);
         var checker = new RulesSetChecker();
 
-        //checker.addRule(new UnalignedControlsCheck());    +
-        //checker.addRule(new ClippedControlCheck());       +
-        //checker.addRule(new ObscuredControlCheck());      +
-        //checker.addRule(new WrongLanguageCheck());        +
-        //checker.addRule(new ObscuredTextCheck());         +
-        //checker.addRule(new GrammarCheck());              +
-        //checker.addRule(new WrongEncodingCheck());        +
-        //checker.addRule(new ClippedTextCheck());          +
-        //checker.addRule(new UnlocalizedIconsCheck());     +
-        //checker.addRule(new MissingTranslationCheck());   +
-        //checker.addRule(new MixedLanguagesStateCheck());  +
-        //checker.addRule(new MixedLanguagesAppCheck());    +
-        //checker.addRule(new OffensiveMessagesCheck());    +
-        //checker.addRule(new UnreadableTextCheck());       +
-        //checker.addRule(new TooHardToUnderstandCheck());  +
-        //checker.addRule(new MissingTextCheck());          //+
-        checker.addRule(new ColorCompatibilityCheck());
+        for (var rule : rules) {
+            checker.addRule(rule);
+        }
 
-        var apps = new File(Settings.appsFolder).listFiles(p -> p.isDirectory());
-        var exec = Executors.newFixedThreadPool(Runtime
-                                                    .getRuntime()
-                                                    .availableProcessors());
+        var apps = FileExplorerHelper.getAllAppDirectories();
+        var processorCount = Runtime
+            .getRuntime()
+            .availableProcessors();
+        var exec = Executors.newFixedThreadPool(processorCount);
 
         for (var app : apps) {
             runChecks(app, exec, checker, failures);

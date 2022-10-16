@@ -52,6 +52,7 @@ public class RulesSetChecker {
                 } catch (Throwable ex) {
                     ex.printStackTrace();
                 } finally {
+                    ((BaseRuleCheck) check).notifyObservers();
                     synchronized (checksFinished) {
                         checksFinished.add(check);
                     }
@@ -62,10 +63,11 @@ public class RulesSetChecker {
 
     public void runAppChecks(AppContext context, ExecutorService exec, ResultsCollector failures) {
         for (var ruleCheck : this.rulesCheckers) {
-            if (ruleCheck instanceof IAppRuleChecker) {
-                var check = (IAppRuleChecker) ruleCheck;
-
-                exec.submit(() -> check.analyze(context, failures));
+            if (ruleCheck instanceof IAppRuleChecker check) {
+                exec.submit(() -> {
+                    check.analyze(context, failures);
+                    ((BaseRuleCheck) check).notifyObservers();
+                });
             }
         }
     }

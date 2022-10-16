@@ -1,0 +1,4 @@
+Choose your password
+Must be at least 4 characters
+Cancel
+CONTINUE

@@ -1,10 +1,11 @@
 package edu.ktu.screenshotanalyser.tools;
 
+import edu.ktu.screenshotanalyser.checks.IAppRuleChecker;
+import edu.ktu.screenshotanalyser.checks.IStateRuleChecker;
 import edu.ktu.screenshotanalyser.utils.methods.MathUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 public class ProgressTracker implements IObserver {
-    private int _expectedImagesCount;
     private IObservable[] _ruleChecks;
     private IOutput _output;
     private final IProgressBarRenderer _progressBarRenderer;
@@ -13,40 +14,40 @@ public class ProgressTracker implements IObserver {
     private int _expectedProcessedCount;
     private int _processedCount;
 
-    public ProgressTracker(IProgressBarRenderer progressBarRenderer) {
+    public ProgressTracker(
+        IProgressBarRenderer progressBarRenderer,
+        IObservable[] ruleChecks,
+        int appCount,
+        int stateImageCount,
+        IOutput output) {
         _progressBarRenderer = progressBarRenderer;
         _stopWatch = new StopWatch();
+        _output = output;
+        prepareTracker(ruleChecks, appCount, stateImageCount);
     }
 
-    public void setExpectedImagesCount(int expectedImagesCount) {
-        _expectedImagesCount = expectedImagesCount;
-    }
-
-    public void setRuleChecks(IObservable[] ruleChecks) {
-        if (_ruleChecks != null) {
-            for (var ruleCheck : _ruleChecks) {
-                ruleCheck.deleteObserver(this);
-            }
-        }
-
+    private void prepareTracker(IObservable[] ruleChecks, int appCount, int stateImageCount) {
+        _expectedProcessedCount = 0;
         _ruleChecks = ruleChecks;
         for (var ruleCheck : _ruleChecks) {
             ruleCheck.addObserver(this);
+            if (ruleCheck instanceof IAppRuleChecker) {
+                _expectedProcessedCount += appCount;
+            }
+
+            if (ruleCheck instanceof IStateRuleChecker) {
+                _expectedProcessedCount += stateImageCount;
+            }
         }
 
-        _expectedProcessedCount = _expectedImagesCount * _ruleChecks.length;
         _processedCount = 0;
-    }
-
-    public void setOutput(IOutput output) {
-        _output = output;
     }
 
     public void writeProgress() {
         var progressPercentageString = getProgressPercentageString();
         var estimatedTimeRemainingString = getEstimatedTimeRemainingString();
 
-        _output.write(String.format("%s | %s", progressPercentageString, estimatedTimeRemainingString), true);
+        _output.writeOverride(String.format("%s | %s", progressPercentageString, estimatedTimeRemainingString));
     }
 
     private float getProgress() {
@@ -62,6 +63,10 @@ public class ProgressTracker implements IObserver {
     }
 
     private String getEstimatedTimeRemainingString() {
+        if (_stopWatch.isStopped()) {
+            return "??:?? remaining";
+        }
+
         var elapsedTimeMillis = _stopWatch.getTime();
         var todoProcess = _expectedProcessedCount - _processedCount;
         var estimatedTimeMillis = (elapsedTimeMillis / _processedCount) * todoProcess;

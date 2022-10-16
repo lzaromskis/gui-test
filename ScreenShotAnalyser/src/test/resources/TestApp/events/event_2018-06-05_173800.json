@@ -1,0 +1,48 @@
+{
+  "stop_state": "fb101208aca3de781ae116ac1293f121", 
+  "event_str": "TouchEvent(state=fb101208aca3de781ae116ac1293f121, view=58b0704a53a20f0f64ffccdc8f927587)", 
+  "tag": "2018-06-05_173800", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "android:id/titleDividerNoCustom", 
+      "text": null, 
+      "visible": true, 
+      "checkable": false, 
+      "children": [], 
+      "size": "432*12", 
+      "checked": false, 
+      "temp_id": 7, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.view.View[resource_id]android:id/titleDividerNoCustom", 
+      "is_password": false, 
+      "parent": 4, 
+      "focusable": false, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": false, 
+      "class": "android.view.View", 
+      "scrollable": false, 
+      "package": "com.android.settings", 
+      "long_clickable": false, 
+      "view_str": "58b0704a53a20f0f64ffccdc8f927587", 
+      "enabled": true, 
+      "bounds": [
+        [
+          24, 
+          359
+        ], 
+        [
+          456, 
+          371
+        ]
+      ], 
+      "signature": "[class]android.view.View[resource_id]android:id/titleDividerNoCustom[text]None[enabled,,]"
+    }
+  }, 
+  "start_state": "fb101208aca3de781ae116ac1293f121"
+}

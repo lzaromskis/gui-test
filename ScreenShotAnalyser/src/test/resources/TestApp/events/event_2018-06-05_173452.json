@@ -1,0 +1,51 @@
+{
+  "stop_state": "241592bd47aece1845116b4e18fb187e", 
+  "event_str": "TouchEvent(state=b2df1252d15fe0936e743e74180cc8a1, view=c6824fc45a5cf0927d902196977946e9)", 
+  "tag": "2018-06-05_173452", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "com.android.settings:id/lock_none", 
+      "text": null, 
+      "visible": true, 
+      "checkable": false, 
+      "children": [
+        35, 
+        37
+      ], 
+      "size": "480*75", 
+      "checked": false, 
+      "temp_id": 34, 
+      "selected": false, 
+      "child_count": 2, 
+      "content_free_signature": "[class]android.widget.LinearLayout[resource_id]com.android.settings:id/lock_none", 
+      "is_password": false, 
+      "parent": 16, 
+      "focusable": true, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": true, 
+      "class": "android.widget.LinearLayout", 
+      "scrollable": false, 
+      "package": "com.android.settings", 
+      "long_clickable": false, 
+      "view_str": "c6824fc45a5cf0927d902196977946e9", 
+      "enabled": true, 
+      "bounds": [
+        [
+          0, 
+          725
+        ], 
+        [
+          480, 
+          800
+        ]
+      ], 
+      "signature": "[class]android.widget.LinearLayout[resource_id]com.android.settings:id/lock_none[text]None[enabled,,]"
+    }
+  }, 
+  "start_state": "b2df1252d15fe0936e743e74180cc8a1"
+}

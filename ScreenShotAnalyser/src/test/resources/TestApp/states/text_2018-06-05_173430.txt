@@ -1,0 +1,8 @@
+Set up a new account
+Email address
+Password
+Show password
+Advanced options
+Use client certificate
+Manual setup
+Next

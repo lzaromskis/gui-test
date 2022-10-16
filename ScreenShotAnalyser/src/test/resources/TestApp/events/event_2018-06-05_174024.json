@@ -1,0 +1,48 @@
+{
+  "stop_state": "a98c0e55081d3a2b9818bdc773f6760d", 
+  "event_str": "TouchEvent(state=ebedf972c95acdf784fee5184a8a9660, view=6e7a1c23e3455b371c36fa110f6a4cc1)", 
+  "tag": "2018-06-05_174024", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "com.fsck.k9:id/show_password", 
+      "text": "Show password", 
+      "visible": true, 
+      "checkable": true, 
+      "children": [], 
+      "size": "447*48", 
+      "checked": true, 
+      "temp_id": 16, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.widget.CheckBox[resource_id]com.fsck.k9:id/show_password", 
+      "is_password": false, 
+      "parent": 13, 
+      "focusable": true, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": true, 
+      "class": "android.widget.CheckBox", 
+      "scrollable": false, 
+      "package": "com.fsck.k9", 
+      "long_clickable": false, 
+      "view_str": "6e7a1c23e3455b371c36fa110f6a4cc1", 
+      "enabled": true, 
+      "bounds": [
+        [
+          9, 
+          392
+        ], 
+        [
+          456, 
+          440
+        ]
+      ], 
+      "signature": "[class]android.widget.CheckBox[resource_id]com.fsck.k9:id/show_password[text]Show password[enabled,checked,]"
+    }
+  }, 
+  "start_state": "ebedf972c95acdf784fee5184a8a9660"
+}

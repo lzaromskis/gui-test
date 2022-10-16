@@ -1,11 +1,24 @@
 package edu.ktu.screenshotanalyser.tools;
 
 import edu.ktu.screenshotanalyser.utils.methods.CollectionUtils;
+import edu.ktu.screenshotanalyser.utils.methods.ImageUtils;
 import edu.ktu.screenshotanalyser.utils.models.PixelRGB;
 
+import java.awt.image.BufferedImage;
 import java.util.*;
 
 public class KMeans implements IDominantColorProvider {
+    @Override
+    public PixelRGB[] getDominantColors(BufferedImage image, int numberOfColors) {
+        return getDominantColors(image, numberOfColors, 100);
+    }
+
+    @Override
+    public PixelRGB[] getDominantColors(BufferedImage image, int numberOfColors, int maxIterations) {
+        var imageData = ImageUtils.bufferedImageToPixelRGBArray(image);
+        return getDominantColors(imageData, numberOfColors, maxIterations);
+    }
+
     @Override
     public PixelRGB[] getDominantColors(PixelRGB[] data, int numberOfColors) {
         return getDominantColors(data, numberOfColors, 100);

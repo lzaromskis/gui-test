@@ -1,0 +1,48 @@
+{
+  "stop_state": "7147dddca2df37e74a7ac4a0a273fbea", 
+  "event_str": "TouchEvent(state=7147dddca2df37e74a7ac4a0a273fbea, view=753b523d04e2cf7582d4e955bc15feda)", 
+  "tag": "2018-06-05_173848", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "com.fsck.k9:id/divider", 
+      "text": null, 
+      "visible": true, 
+      "checkable": false, 
+      "children": [], 
+      "size": "480*2", 
+      "checked": false, 
+      "temp_id": 26, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.view.View[resource_id]com.fsck.k9:id/divider", 
+      "is_password": false, 
+      "parent": 11, 
+      "focusable": false, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": false, 
+      "class": "android.view.View", 
+      "scrollable": false, 
+      "package": "com.fsck.k9", 
+      "long_clickable": false, 
+      "view_str": "753b523d04e2cf7582d4e955bc15feda", 
+      "enabled": true, 
+      "bounds": [
+        [
+          0, 
+          726
+        ], 
+        [
+          480, 
+          728
+        ]
+      ], 
+      "signature": "[class]android.view.View[resource_id]com.fsck.k9:id/divider[text]None[enabled,,]"
+    }
+  }, 
+  "start_state": "7147dddca2df37e74a7ac4a0a273fbea"
+}
