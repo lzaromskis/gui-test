@@ -29,7 +29,7 @@ public abstract class BaseRuleCheck implements IObservable {
         message = message.trim() + "\n";
 
         try {
-            var logFile = Paths.get("e:/log/" + this.ruleCode + ".txt");
+            var logFile = Paths.get("d:/1/log/" + this.ruleCode + ".txt");
 
             Files.write(logFile, message.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND, StandardOpenOption.CREATE);
         } catch (IOException ex) {

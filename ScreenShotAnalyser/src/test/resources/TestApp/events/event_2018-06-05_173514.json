@@ -1,0 +1,51 @@
+{
+  "stop_state": "1ef123d4251eea448ad20f4cf160e2af", 
+  "event_str": "TouchEvent(state=647bc801ae26f8450b7684ca860f5316, view=f68944e5047a6a4f454876e0c38a31e7)", 
+  "tag": "2018-06-05_173514", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "com.android.settings:id/encrypt_dont_require_password", 
+      "text": null, 
+      "visible": true, 
+      "checkable": false, 
+      "children": [
+        27, 
+        29
+      ], 
+      "size": "480*81", 
+      "checked": false, 
+      "temp_id": 26, 
+      "selected": false, 
+      "child_count": 2, 
+      "content_free_signature": "[class]android.widget.LinearLayout[resource_id]com.android.settings:id/encrypt_dont_require_password", 
+      "is_password": false, 
+      "parent": 14, 
+      "focusable": true, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": true, 
+      "class": "android.widget.LinearLayout", 
+      "scrollable": false, 
+      "package": "com.android.settings", 
+      "long_clickable": false, 
+      "view_str": "f68944e5047a6a4f454876e0c38a31e7", 
+      "enabled": true, 
+      "bounds": [
+        [
+          0, 
+          658
+        ], 
+        [
+          480, 
+          739
+        ]
+      ], 
+      "signature": "[class]android.widget.LinearLayout[resource_id]com.android.settings:id/encrypt_dont_require_password[text]None[enabled,,]"
+    }
+  }, 
+  "start_state": "647bc801ae26f8450b7684ca860f5316"
+}

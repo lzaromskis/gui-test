@@ -2,7 +2,7 @@ package edu.ktu.screenshotanalyser.tools.colorcompatibility;
 
 import edu.ktu.screenshotanalyser.enums.ColorCombinations;
 
-public class ColorCompatibilityCalculatorProvider {
+public class ColorCompatibilityCalculatorProvider implements IColorCompatibilityCalculatorProvider {
     public IColorCompatibilityCalculator getCalculator(ColorCombinations combination) {
         switch (combination) {
             case COMPLEMENTARY -> {

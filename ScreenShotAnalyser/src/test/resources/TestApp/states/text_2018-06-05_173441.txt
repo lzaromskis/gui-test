@@ -1,0 +1,4 @@
+Attention
+You need to set a lock screen PIN or password before you can use credential storage.
+CANCEL
+OK

@@ -1,0 +1,51 @@
+{
+  "stop_state": "647bc801ae26f8450b7684ca860f5316", 
+  "event_str": "TouchEvent(state=241592bd47aece1845116b4e18fb187e, view=567a733bbeba0eb01bc588c99ae2d1ef)", 
+  "tag": "2018-06-05_173503", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "com.android.settings:id/lock_password", 
+      "text": null, 
+      "visible": true, 
+      "checkable": false, 
+      "children": [
+        37, 
+        40
+      ], 
+      "size": "480*158", 
+      "checked": false, 
+      "temp_id": 36, 
+      "selected": false, 
+      "child_count": 2, 
+      "content_free_signature": "[class]android.widget.LinearLayout[resource_id]com.android.settings:id/lock_password", 
+      "is_password": false, 
+      "parent": 16, 
+      "focusable": true, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": true, 
+      "class": "android.widget.LinearLayout", 
+      "scrollable": false, 
+      "package": "com.android.settings", 
+      "long_clickable": false, 
+      "view_str": "567a733bbeba0eb01bc588c99ae2d1ef", 
+      "enabled": true, 
+      "bounds": [
+        [
+          0, 
+          635
+        ], 
+        [
+          480, 
+          793
+        ]
+      ], 
+      "signature": "[class]android.widget.LinearLayout[resource_id]com.android.settings:id/lock_password[text]None[enabled,,]"
+    }
+  }, 
+  "start_state": "241592bd47aece1845116b4e18fb187e"
+}

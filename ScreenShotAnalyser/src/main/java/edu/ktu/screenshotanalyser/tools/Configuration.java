@@ -2,6 +2,7 @@ package edu.ktu.screenshotanalyser.tools;
 
 import edu.ktu.screenshotanalyser.enums.ColorCombinations;
 import edu.ktu.screenshotanalyser.enums.ColorSpaces;
+import edu.ktu.screenshotanalyser.enums.RuleCheckCodes;
 import edu.ktu.screenshotanalyser.exceptions.InvalidFileContentException;
 import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
 
@@ -66,7 +67,7 @@ public class Configuration {
         _filename = filename;
     }
 
-    public static Configuration instance() throws IOException {
+    public synchronized static Configuration instance() throws IOException {
         if (_instance == null) {
             _instance = new Configuration();
         }
@@ -74,14 +75,15 @@ public class Configuration {
         return _instance;
     }
 
-    public String[] getRuleCodes() throws MissingSettingException {
+    public RuleCheckCodes[] getRuleCodes() throws MissingSettingException {
         var rulesString = getString("ruleCodes");
         var splitRules = rulesString.split(",");
         return Arrays
             .stream(splitRules)
-            .map(String::trim)
+            .map(x -> x.trim().toLowerCase())
             .distinct()
-            .toArray(String[]::new);
+            .map(RuleCheckCodes::parseString)
+            .toArray(RuleCheckCodes[]::new);
     }
 
     public String getAppsFolderPath() throws MissingSettingException {
@@ -104,8 +106,7 @@ public class Configuration {
         var rawString = getString("colorSpaces");
         return Arrays
             .stream(rawString.split(","))
-            .map(String::trim)
-            .map(String::toLowerCase)
+            .map(x -> x.trim().toLowerCase())
             .distinct()
             .map(ColorSpaces::parseString)
             .toArray(ColorSpaces[]::new);

@@ -1,0 +1,7 @@
+Set up a new account
+Email address
+Password
+Show password
+Advanced options
+Manual setup
+Next

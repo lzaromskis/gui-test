@@ -1,0 +1,10 @@
+{
+  "stop_state": "b2df1252d15fe0936e743e74180cc8a1", 
+  "event_str": "KeyEvent(state=241592bd47aece1845116b4e18fb187e, name=BACK)", 
+  "tag": "2018-06-05_173543", 
+  "event": {
+    "event_type": "key", 
+    "name": "BACK"
+  }, 
+  "start_state": "241592bd47aece1845116b4e18fb187e"
+}

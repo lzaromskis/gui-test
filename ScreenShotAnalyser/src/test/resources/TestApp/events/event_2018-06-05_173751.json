@@ -1,0 +1,48 @@
+{
+  "stop_state": "fb101208aca3de781ae116ac1293f121", 
+  "event_str": "TouchEvent(state=fb101208aca3de781ae116ac1293f121, view=526bc0f544b90e0c23617fc3bee9a9d5)", 
+  "tag": "2018-06-05_173751", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "android:id/message", 
+      "text": "You need to set a lock screen PIN or password before you can use credential storage.", 
+      "visible": true, 
+      "checkable": false, 
+      "children": [], 
+      "size": "432*89", 
+      "checked": false, 
+      "temp_id": 11, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.widget.TextView[resource_id]android:id/message", 
+      "is_password": false, 
+      "parent": 10, 
+      "focusable": false, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": false, 
+      "class": "android.widget.TextView", 
+      "scrollable": false, 
+      "package": "com.android.settings", 
+      "long_clickable": false, 
+      "view_str": "526bc0f544b90e0c23617fc3bee9a9d5", 
+      "enabled": true, 
+      "bounds": [
+        [
+          24, 
+          371
+        ], 
+        [
+          456, 
+          460
+        ]
+      ], 
+      "signature": "[class]android.widget.TextView[resource_id]android:id/message[text]You need to set a lock screen PIN or password before you can use credential storage.[enabled,,]"
+    }
+  }, 
+  "start_state": "fb101208aca3de781ae116ac1293f121"
+}

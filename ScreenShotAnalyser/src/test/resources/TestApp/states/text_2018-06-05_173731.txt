@@ -1,0 +1,6 @@
+Set up a new account
+Email address
+No client certificate
+Advanced options
+Manual setup
+Next

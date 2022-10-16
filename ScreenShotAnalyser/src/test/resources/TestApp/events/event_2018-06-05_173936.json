@@ -1,0 +1,48 @@
+{
+  "stop_state": "7147dddca2df37e74a7ac4a0a273fbea", 
+  "event_str": "TouchEvent(state=7147dddca2df37e74a7ac4a0a273fbea, view=16142d318416333749f9f7d6fc95b686)", 
+  "tag": "2018-06-05_173936", 
+  "event": {
+    "y": null, 
+    "x": null, 
+    "event_type": "touch", 
+    "view": {
+      "content_description": null, 
+      "resource_id": "android:id/action_bar_title", 
+      "text": "Set up a new account", 
+      "visible": true, 
+      "checkable": false, 
+      "children": [], 
+      "size": "258*37", 
+      "checked": false, 
+      "temp_id": 8, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": "[class]android.widget.TextView[resource_id]android:id/action_bar_title", 
+      "is_password": false, 
+      "parent": 7, 
+      "focusable": false, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": false, 
+      "class": "android.widget.TextView", 
+      "scrollable": false, 
+      "package": "com.fsck.k9", 
+      "long_clickable": false, 
+      "view_str": "16142d318416333749f9f7d6fc95b686", 
+      "enabled": true, 
+      "bounds": [
+        [
+          73, 
+          53
+        ], 
+        [
+          331, 
+          90
+        ]
+      ], 
+      "signature": "[class]android.widget.TextView[resource_id]android:id/action_bar_title[text]Set up a new account[enabled,,]"
+    }
+  }, 
+  "start_state": "7147dddca2df37e74a7ac4a0a273fbea"
+}

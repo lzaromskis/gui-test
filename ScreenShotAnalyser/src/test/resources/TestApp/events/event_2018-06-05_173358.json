@@ -1,0 +1,10 @@
+{
+  "stop_state": "df6503be83c9051a1ff6eb181b971a4a", 
+  "event_str": "IntentEvent(intent='am start com.fsck.k9/com.fsck.k9.activity.Accounts')", 
+  "tag": "2018-06-05_173358", 
+  "event": {
+    "intent": "am start com.fsck.k9/com.fsck.k9.activity.Accounts", 
+    "event_type": "intent"
+  }, 
+  "start_state": "e6be8390057f75de5da89e3078b48fff"
+}

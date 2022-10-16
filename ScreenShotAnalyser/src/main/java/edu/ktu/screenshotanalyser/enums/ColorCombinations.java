@@ -5,7 +5,8 @@ public enum ColorCombinations {
     MONOCHROMATIC,
     ANALOGOUS,
     TRIADIC,
-    TETRADIC;
+    TETRADIC
+    ;
 
     public static ColorCombinations parseString(String value) {
         var lower = value.toLowerCase();
