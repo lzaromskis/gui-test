@@ -44,8 +44,9 @@ public class ProgressTracker implements IObserver {
     }
 
     public void writeProgress() {
-        var progressPercentageString = getProgressPercentageString();
-        var estimatedTimeRemainingString = getEstimatedTimeRemainingString();
+        var progress = getProgress();
+        var progressPercentageString = getProgressPercentageString(progress);
+        var estimatedTimeRemainingString = getEstimatedTimeRemainingString(progress);
 
         _output.writeOverride(String.format("%s | %s", progressPercentageString, estimatedTimeRemainingString));
     }
@@ -55,16 +56,18 @@ public class ProgressTracker implements IObserver {
         return _expectedProcessedCount == 0 ? 0f : MathUtils.clamp((float) _processedCount / (float) _expectedProcessedCount, 0f, 1f);
     }
 
-    private String getProgressPercentageString() {
-        var progress = getProgress();
+    private String getProgressPercentageString(float progress) {
         var progressBar = _progressBarRenderer.render(progress);
-
         return String.format("%s %.2f%%", progressBar, progress * 100f);
     }
 
-    private String getEstimatedTimeRemainingString() {
-        if (_stopWatch.isStopped()) {
+    private String getEstimatedTimeRemainingString(float progress) {
+        if (progress == 0f) {
             return "??:?? remaining";
+        }
+
+        if (progress == 1f) {
+            return "00:00 remaining";
         }
 
         var elapsedTimeMillis = _stopWatch.getTime();

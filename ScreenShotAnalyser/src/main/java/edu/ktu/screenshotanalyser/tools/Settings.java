@@ -3,8 +3,8 @@ package edu.ktu.screenshotanalyser.tools;
 import java.io.File;
 
 public class Settings {
-    public static final String appsFolder = "D:\\TestApps\\apps";
-    public static final File appImagesFolder = new File("D:\\TestData\\small_data_test");
+    public static final String appsFolder = "D:\\TestApps\\test_apps";
+    public static final File appImagesFolder = new File("D:\\TestData\\mock_data");
     public static final String debugFolder = "D:\\1\\debug";//"e:/1/";
 }
 

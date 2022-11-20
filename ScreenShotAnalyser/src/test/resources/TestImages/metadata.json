@@ -1,0 +1,50 @@
+{
+  "views": [
+    {
+      "content_description": null, 
+      "resource_id": "TestId", 
+      "text": "Test text.", 
+      "visible": true, 
+      "checkable": false, 
+      "children": [
+      ], 
+      "size": "600*200", 
+      "checked": false, 
+      "temp_id": 13, 
+      "selected": false, 
+      "child_count": 0, 
+      "content_free_signature": null, 
+      "is_password": false, 
+      "parent": 0, 
+      "focusable": false, 
+      "editable": false, 
+      "focused": false, 
+      "clickable": false, 
+      "class": "android.widget.TextView", 
+      "scrollable": false, 
+      "package": "test.package", 
+      "long_clickable": false, 
+      "view_str": null, 
+      "enabled": true, 
+      "bounds": [
+        [
+          0, 
+          0
+        ], 
+        [
+          600, 
+          200
+        ]
+      ], 
+      "signature": null
+    }
+  ], 
+  "state_str_content_free": null, 
+  "activity_stack": [
+  ], 
+  "background_services": [
+  ], 
+  "state_str": null, 
+  "tag": null, 
+  "foreground_activity": null
+}

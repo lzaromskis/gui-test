@@ -26,9 +26,9 @@ public class MonochromaticColorCompatibilityCalculator extends BaseColorCompatib
         var totalCoef = 0f;
         for (PixelHSV c : colorsHsv) {
             var hueCoef = calculateHueCompatibility(c, tempColor, 0f, MAX_HUE_DEVIATION);
-            if (MathUtils.equals(hueCoef, 0f)) {
-                return 0f;
-            }
+            //if (MathUtils.equals(hueCoef, 0f)) {
+            //    return 0f;
+            //}
 
             totalCoef += hueCoef;
         }

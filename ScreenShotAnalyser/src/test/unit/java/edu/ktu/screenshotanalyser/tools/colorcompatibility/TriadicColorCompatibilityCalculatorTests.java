@@ -43,8 +43,8 @@ public class TriadicColorCompatibilityCalculatorTests {
     }
 
     public static Stream<Arguments> badCompatibilityColors() {
-        return Stream.of(arguments(new PixelRGB(0xFF8300FF), new PixelRGB(0xFFFF00FB), new PixelRGB(0xFF0400FF)),
-                         arguments(new PixelRGB(0xFF6E29D6), new PixelRGB(0xFFD66E29), new PixelRGB(0xFFD1ED12)),
-                         arguments(new PixelRGB(0xFFEA5415), new PixelRGB(0xFF40EA15), new PixelRGB(0xFF15ABEA)));
+        return Stream.of(arguments(new PixelRGB(0xFFE91617), new PixelRGB(0xFF72583F), new PixelRGB(0xFFAD3774)),
+                         arguments(new PixelRGB(0xFF3A41C5), new PixelRGB(0xFF7F16FF), new PixelRGB(0xFF43647F)),
+                         arguments(new PixelRGB(0xFF64C62F), new PixelRGB(0xFF02FC28), new PixelRGB(0xFF5F663D)));
     }
 }

@@ -3,6 +3,8 @@ package edu.ktu.screenshotanalyser.checks;
 import edu.ktu.screenshotanalyser.context.AppContext;
 import edu.ktu.screenshotanalyser.context.DefaultContextProvider;
 import edu.ktu.screenshotanalyser.context.State;
+import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
+import edu.ktu.screenshotanalyser.tools.Configuration;
 import edu.ktu.screenshotanalyser.tools.Settings;
 
 import java.io.File;
@@ -12,8 +14,9 @@ import java.util.concurrent.ExecutorService;
 public class AppChecker {
     //static int a= 0;
 
-    public void runChecks(File appName, RulesSetChecker checker, ExecutorService exec, ResultsCollector failures) throws IOException, InterruptedException {
-        DefaultContextProvider contextProvider = new DefaultContextProvider(Settings.appImagesFolder);
+    public void runChecks(File appName, RulesSetChecker checker, ExecutorService exec, ResultsCollector failures) throws IOException, InterruptedException, MissingSettingException {
+        var appImagesFolder = Configuration.instance().getAppImagesFolderPath();
+        DefaultContextProvider contextProvider = new DefaultContextProvider(new File(appImagesFolder));
         AppContext context = contextProvider.getContext(appName);
 
         if (null != context.getApkFile()) {

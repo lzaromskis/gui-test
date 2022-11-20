@@ -34,23 +34,23 @@ public class AnalogousColorCompatibilityCalculator extends BaseColorCompatibilit
         var valCoefSum = 0f;
         for (var c : otherColors) {
             var hueCoef = calculateHueCompatibility(c, middleColor, EXPECTED_HUE_DIFFERENCE, MAX_HUE_DEVIATION);
-            if (MathUtils.equals(hueCoef, 0f)) {
-                return 0f;
-            }
+            //if (MathUtils.equals(hueCoef, 0f)) {
+            //    return 0f;
+            //}
 
             hueCoefSum += hueCoef;
 
             var satCoef = calculateSaturationCompatibility(c, middleColor, MAX_SATURATION_DEVIATION);
-            if (MathUtils.equals(satCoef, 0f)) {
-                return 0f;
-            }
+            //if (MathUtils.equals(satCoef, 0f)) {
+            //    return 0f;
+            //}
 
             satCoefSum += satCoef;
 
             var valCoef = calculateValueCompatibility(c, middleColor, MAX_VALUE_DEVIATION);
-            if (MathUtils.equals(valCoef, 0f)) {
-                return 0f;
-            }
+            //if (MathUtils.equals(valCoef, 0f)) {
+            //    return 0f;
+            //}
 
             valCoefSum += valCoef;
         }
@@ -70,7 +70,6 @@ public class AnalogousColorCompatibilityCalculator extends BaseColorCompatibilit
                 }
 
                 diffSum += MathUtils.circularDifference(color.getHue(), other.getHue(), 0f, 1f);
-
             }
             if (diffSum < minDiff) {
                 minDiff = diffSum;

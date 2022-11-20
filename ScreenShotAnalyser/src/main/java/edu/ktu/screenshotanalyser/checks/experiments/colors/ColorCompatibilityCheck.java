@@ -17,8 +17,9 @@ import edu.ktu.screenshotanalyser.tools.colorcompatibility.NumberOfColorsInCombi
 import edu.ktu.screenshotanalyser.utils.methods.ImageUtils;
 import org.jetbrains.annotations.TestOnly;
 
-import java.awt.*;
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 public class ColorCompatibilityCheck extends BaseRuleCheck implements IStateRuleChecker {
@@ -33,7 +34,7 @@ public class ColorCompatibilityCheck extends BaseRuleCheck implements IStateRule
         super(38, RuleCheckCodes.COLOR_COMPATIBILITY_CHECK.name());
 
         _colorSpaceConverter = new ColorSpaceConverter();
-        _dominantColorProvider = new KMeans();
+        _dominantColorProvider = new DominantColorProviderKMeans();
         _numberOfColorsInCombinationProvider = new NumberOfColorsInCombinationProvider();
         _compatibilityCalculatorProvider = new ColorCompatibilityCalculatorProvider();
     }
@@ -58,13 +59,22 @@ public class ColorCompatibilityCheck extends BaseRuleCheck implements IStateRule
         var colorSpaces = Configuration.instance().getColorSpaces();
         var image = state.getImage();
 
-        // var smallImage = ImageUtils.resize(image, 80);
+        var smallImage = image.getWidth() > 160 ? ImageUtils.resize(image, 160) : image;
         for (var colorSpace: colorSpaces) {
-            var convertedImage = _colorSpaceConverter.convertImage(image, colorSpace);
+            var convertedImage = _colorSpaceConverter.convertImage(smallImage, colorSpace);
             var result = calculateCompatibility(convertedImage, combination);
 
-            if (result <= FAILURE_THRESHOLD) {
+            var failed = result <= FAILURE_THRESHOLD;
+            if (failed) {
                 failures.addFailure(new CheckResult(state, this, getFailureMessage(state, combination, colorSpace, result), 1));
+            }
+
+            // TODO: Remove this. For debug purposes only.
+            if (!Configuration.instance().getIsTestInstance()) {
+                var debugPath = Configuration.instance().getDebugFolderPath();
+                var id = java.util.UUID.randomUUID();
+                var f = new File(String.format("%s\\compat_%s_%s.png", debugPath, failed ? "failed" : "passed", id));
+                ImageIO.write(convertedImage, "png", f);
             }
         }
     }

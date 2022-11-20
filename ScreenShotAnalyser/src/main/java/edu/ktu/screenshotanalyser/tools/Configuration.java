@@ -5,6 +5,7 @@ import edu.ktu.screenshotanalyser.enums.ColorSpaces;
 import edu.ktu.screenshotanalyser.enums.RuleCheckCodes;
 import edu.ktu.screenshotanalyser.exceptions.InvalidFileContentException;
 import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
+import org.jetbrains.annotations.TestOnly;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -110,6 +111,15 @@ public class Configuration {
             .distinct()
             .map(ColorSpaces::parseString)
             .toArray(ColorSpaces[]::new);
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean getIsTestInstance() {
+        try {
+            return Boolean.parseBoolean(getString("isTestInstance"));
+        } catch (MissingSettingException ignored) {
+            return false;
+        }
     }
 
     private String getString(String key) throws MissingSettingException {

@@ -24,19 +24,19 @@ public class ComplementaryColorCompatibilityCalculator extends BaseColorCompatib
             .toArray(PixelHSV[]::new);
 
         var hueCoef = calculateHueCompatibility(colorsHsv[0], colorsHsv[1], EXPECTED_HUE_DIFFERENCE, MAX_HUE_DEVIATION);
-        if (MathUtils.equals(hueCoef, 0f)) {
-            return 0f;
-        }
+        //if (MathUtils.equals(hueCoef, 0f)) {
+        //    return 0f;
+        //}
 
         var satCoef = calculateSaturationCompatibility(colorsHsv[0], colorsHsv[1], MAX_SATURATION_DEVIATION);
-        if (MathUtils.equals(satCoef, 0f)) {
-            return 0f;
-        }
+        //if (MathUtils.equals(satCoef, 0f)) {
+        //    return 0f;
+        //}
 
         var valCoef = calculateValueCompatibility(colorsHsv[0], colorsHsv[1], MAX_VALUE_DEVIATION);
-        if (MathUtils.equals(valCoef, 0f)) {
-            return 0f;
-        }
+        //if (MathUtils.equals(valCoef, 0f)) {
+        //    return 0f;
+        //}
 
         return hueCoef * 0.7f + satCoef * 0.15f + valCoef * 0.15f;
     }
