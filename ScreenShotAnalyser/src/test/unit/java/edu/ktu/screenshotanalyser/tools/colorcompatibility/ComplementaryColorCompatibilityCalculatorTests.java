@@ -45,8 +45,8 @@ public class ComplementaryColorCompatibilityCalculatorTests {
     }
 
     public static Stream<Arguments> badCompatibilityColors() {
-        return Stream.of(arguments(new PixelRGB(0xFFFF0000), new PixelRGB(0xFF0000FF)),
-                         arguments(new PixelRGB(0xFFD728AD), new PixelRGB(0xFFCF8830)),
+        return Stream.of(arguments(new PixelRGB(0xFFFF0000), new PixelRGB(0xFF444444)),
+                         arguments(new PixelRGB(0xFFD728AD), new PixelRGB(0xFF393960)),
                          arguments(new PixelRGB(0xFF35CA8F), new PixelRGB(0xFF708F8D)));
     }
 }

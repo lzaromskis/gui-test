@@ -1,8 +1,11 @@
 package edu.ktu.screenshotanalyser.utils.models;
 
 import edu.ktu.screenshotanalyser.utils.methods.RGBUtils;
+import io.vavr.Function2;
 
-public final class PixelRGB {
+import java.io.Serializable;
+
+public final class PixelRGB implements Serializable {
     private final int _red;
     private final int _green;
     private final int _blue;
@@ -18,9 +21,9 @@ public final class PixelRGB {
     }
 
     public PixelRGB(int sRGB) {
-        this._red = (sRGB >> 16) & 255;
-        this._green = (sRGB >> 8) & 255;
-        this._blue = sRGB & 255;
+        this._red = (sRGB >> 16) & 0xFF;
+        this._green = (sRGB >> 8) & 0xFF;
+        this._blue = sRGB & 0xFF;
     }
 
     public PixelRGB(PixelRGB other) {
@@ -65,6 +68,25 @@ public final class PixelRGB {
         float convertedBlue = matrix.get(6) * linearRed + matrix.get(7) * linearGreen + matrix.get(8) * linearBlue;
 
         return new PixelRGB(RGBUtils.toSRGBChannel(convertedRed), RGBUtils.toSRGBChannel(convertedGreen), RGBUtils.toSRGBChannel(convertedBlue));
+    }
+
+    // https://www.w3.org/TR/WCAG20/#relativeluminancedef
+    public float calculateRelativeLuminance() {
+        var rLuminance = RGBUtils.calculateChannelRelativeLuminance(getRed());
+        var gLuminance = RGBUtils.calculateChannelRelativeLuminance(getGreen());
+        var bLuminance = RGBUtils.calculateChannelRelativeLuminance(getBlue());
+
+        return 0.2126f * rLuminance + 0.7152f * gLuminance + 0.0722f * bLuminance;
+    }
+
+    public static float calculateContrastRatio(PixelRGB lhs, PixelRGB rhs) {
+        var lhsL = lhs.calculateRelativeLuminance();
+        var rhsL = rhs.calculateRelativeLuminance();
+
+        var l1 = Math.max(lhsL, rhsL);
+        var l2 = Math.min(lhsL, rhsL);
+
+        return (l1 + 0.05f) / (l2 + 0.05f);
     }
 
     @Override

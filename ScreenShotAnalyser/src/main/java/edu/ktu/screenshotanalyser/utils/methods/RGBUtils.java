@@ -33,4 +33,12 @@ public final class RGBUtils {
         }
         return (int) (0f + 255f * ((float) Math.pow(linearRGBChannel, 1f / 2.4f) * 1.055f - 0.055f)) & 0xFF;
     }
+
+    // https://www.w3.org/TR/WCAG20/#relativeluminancedef
+    public static float calculateChannelRelativeLuminance(int channel) {
+        var channelSRGB = (float)channel / 255f;
+        return channelSRGB <= 0.03928f
+            ? channelSRGB / 12.92f
+            : (float)Math.pow((channelSRGB + 0.055f) / 1.055f, 2.4f);
+    }
 }

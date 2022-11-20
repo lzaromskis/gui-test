@@ -1,6 +1,5 @@
 package edu.ktu.screenshotanalyser.test.helpers;
 
-import edu.ktu.screenshotanalyser.checks.ResultsCollector;
 import edu.ktu.screenshotanalyser.context.State;
 
 import java.io.File;
@@ -15,13 +14,23 @@ public final class ResourceCreationHelper {
         return new State(
             stateName,
             null,
-            getTestImageFile(imageName),
+            getTestFile(imageName),
             null,
             null
         );
     }
 
-    private static File getTestImageFile(String filename) {
+    public static State createState(String stateName, String imageName, String stateJsonFile) {
+        return new State(
+            stateName,
+            null,
+            getTestFile(imageName),
+            getTestFile(stateJsonFile),
+            null
+        );
+    }
+
+    private static File getTestFile(String filename) {
         return Paths
             .get("src", "test", "resources", "TestImages", filename)
             .toFile();

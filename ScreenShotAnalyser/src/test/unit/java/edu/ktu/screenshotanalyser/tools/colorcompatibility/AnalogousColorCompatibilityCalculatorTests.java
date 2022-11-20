@@ -43,8 +43,8 @@ public class AnalogousColorCompatibilityCalculatorTests {
     }
 
     public static Stream<Arguments> badCompatibilityColors() {
-        return Stream.of(arguments(new PixelRGB(0xFFCDDA25), new PixelRGB(0xFF73DA25), new PixelRGB(0xFFE41BB2)),
-                         arguments(new PixelRGB(0xFFD52AAF), new PixelRGB(0xFFAFD52A), new PixelRGB(0xFF2AAFD5)),
-                         arguments(new PixelRGB(0xFFE7C718), new PixelRGB(0xFFF70873), new PixelRGB(0xFF15EA1F)));
+        return Stream.of(arguments(new PixelRGB(0xFFD42BAB), new PixelRGB(0xFF86994A), new PixelRGB(0xFF414F54)),
+                         arguments(new PixelRGB(0xFF5A2ED1), new PixelRGB(0xFF601900), new PixelRGB(0xFF519964)),
+                         arguments(new PixelRGB(0xFF3CEF10), new PixelRGB(0xFF26387F), new PixelRGB(0xFFB2596B)));
     }
 }

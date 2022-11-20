@@ -30,23 +30,23 @@ public class TetradicColorCompatibilityCalculator extends BaseColorCompatibility
 
         for (int i = 0; i < colorsHsv.length; i++) {
             var hueCoef = calculateHueCompatibilityWithNeighbours(colorsHsv, i, EXPECTED_HUE_DIFFERENCE, MAX_HUE_DEVIATION);
-            if (MathUtils.equals(hueCoef, 0f)) {
-                return 0f;
-            }
+            //if (MathUtils.equals(hueCoef, 0f)) {
+            //    return 0f;
+            //}
 
             hueCoefSum += hueCoef;
 
             var satCoef = calculateSaturationCompatibilityWithNeighbours(colorsHsv, i, MAX_SATURATION_DEVIATION);
-            if (MathUtils.equals(satCoef, 0f)) {
-                return 0f;
-            }
+            //if (MathUtils.equals(satCoef, 0f)) {
+            //    return 0f;
+            //}
 
             satCoefSum += satCoef;
 
             var valCoef = calculateValueCompatibilityWithNeighbours(colorsHsv, i, MAX_VALUE_DEVIATION);
-            if (MathUtils.equals(valCoef, 0f)) {
-                return 0f;
-            }
+            //if (MathUtils.equals(valCoef, 0f)) {
+            //    return 0f;
+            //}
 
             valCoefSum += valCoef;
         }

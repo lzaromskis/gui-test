@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import edu.ktu.screenshotanalyser.checks.*;
 import edu.ktu.screenshotanalyser.checks.experiments.colors.ColorCompatibilityCheck;
+import edu.ktu.screenshotanalyser.checks.experiments.colors.ColorReadabilityCheck;
 import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
 import edu.ktu.screenshotanalyser.tools.*;
 import edu.ktu.screenshotanalyser.utils.helpers.FileExplorerHelper;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +28,13 @@ public class StartUp {
     public static void main(String[] args) throws IOException, InterruptedException, MissingSettingException {
         var output = ConsoleOutput.instance();
 
-        var rules = new BaseRuleCheck[] {new ColorCompatibilityCheck()};
+        LoggerContext logContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        ch.qos.logback.classic.Logger log = logContext.getLogger("com.jayway.jsonpath.internal.path.CompiledPath");
+        log.setLevel(Level.INFO);
+
+        var ruleCodes = Configuration.instance().getRuleCodes();
+        var ruleCheckProvider = new RuleCheckProvider();
+        var rules = Arrays.stream(ruleCodes).map(ruleCheckProvider::getRuleCheck).toArray(BaseRuleCheck[]::new);
         var renderer = new ProgressBarRenderer(
             20,
             "[",
@@ -89,7 +97,7 @@ public class StartUp {
 	}*/
 
     private static void runChecks(
-        File appName, ExecutorService exec, RulesSetChecker rules, ResultsCollector failures) throws IOException, InterruptedException {
+        File appName, ExecutorService exec, RulesSetChecker rules, ResultsCollector failures) throws IOException, InterruptedException, MissingSettingException {
         var appChecker = new AppChecker();
 
         appChecker.runChecks(appName, rules, exec, failures);
