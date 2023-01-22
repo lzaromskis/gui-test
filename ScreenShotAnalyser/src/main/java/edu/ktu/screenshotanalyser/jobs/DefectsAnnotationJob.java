@@ -9,6 +9,7 @@ import edu.ktu.screenshotanalyser.checks.experiments.UnlocalizedIconsCheck;
 import edu.ktu.screenshotanalyser.context.DefaultContextProvider;
 import edu.ktu.screenshotanalyser.context.State;
 import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
+import edu.ktu.screenshotanalyser.tools.Configuration;
 import edu.ktu.screenshotanalyser.tools.Settings;
 import edu.ktu.screenshotanalyser.utils.models.Tuple;
 import org.opencv.core.Core;
@@ -30,7 +31,14 @@ public class DefectsAnnotationJob implements Runnable {
     }
 
     private DefectsAnnotationJob() throws IOException {
-        this.contextProvider = new DefaultContextProvider(Settings.appImagesFolder);
+        String imagesFolderPath;
+        try {
+            imagesFolderPath = Configuration
+                .instance().getAppImagesFolderPath();
+        } catch (MissingSettingException | IOException e) {
+            imagesFolderPath = Settings.appImagesFolder.getAbsolutePath();
+        }
+        this.contextProvider = new DefaultContextProvider(new File(imagesFolderPath));
     }
 
     public void run() {
@@ -61,22 +69,39 @@ public class DefectsAnnotationJob implements Runnable {
                         apkFile = apkFile.substring(0, apkFile.length() - 4);
                         var imageFile = resultSet.getString("FileName");
 
-                        var ff = new File(Settings.appsFolder + apkFile);
-
-                        if (false == ff.exists()) {
-                            ff = new File(Settings.appsFolder + apkFile.substring(0, apkFile.length() - 3));
+                        String appsFolderPath;
+                        try {
+                            appsFolderPath = Configuration
+                                .instance().getAppsFolderPath();
+                        } catch (MissingSettingException | IOException e) {
+                            appsFolderPath = Settings.appsFolder;
                         }
 
+                        String imagesFolderPath;
+                        try {
+                            imagesFolderPath = Configuration
+                                .instance().getAppImagesFolderPath();
+                        } catch (MissingSettingException | IOException e) {
+                            imagesFolderPath = Settings.appImagesFolder.getAbsolutePath();
+                        }
+
+                        var ff = new File(appsFolderPath + apkFile);
+
+                        if (!ff.exists()) {
+                            ff = new File(appsFolderPath + apkFile.substring(0, apkFile.length() - 3));
+                        }
+
+
+
                         var context = this.contextProvider.getContext(ff);
+                        String finalImagesFolderPath = imagesFolderPath;
                         var state = context
                             .getStates()
                             .stream()
                             .filter(p -> p
                                 .getImageFile()
                                 .getAbsolutePath()
-                                .substring(Settings.appImagesFolder
-                                               .getAbsolutePath()
-                                               .length() + 1)
+                                .substring(finalImagesFolderPath.length() + 1)
                                 .equals(imageFile))
                             .findFirst()
                             .get();

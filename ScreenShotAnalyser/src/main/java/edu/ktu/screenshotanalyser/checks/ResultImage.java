@@ -1,12 +1,16 @@
 package edu.ktu.screenshotanalyser.checks;
 
+import edu.ktu.screenshotanalyser.utils.methods.ImageUtils;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
 public class ResultImage {
     public ResultImage(File sourceImageFile) {
@@ -14,14 +18,15 @@ public class ResultImage {
     }
 
     public ResultImage(BufferedImage source) {
-        var data = ((DataBufferByte) source
-            .getRaster()
-            .getDataBuffer()).getData();
-        var mat = new Mat(source.getHeight(), source.getWidth(), CvType.CV_8UC3);
+        this.image = ImageUtils.bufferedImageToMat(source);
+        // var data = ((DataBufferByte) source
+        //     .getRaster()
+        //     .getDataBuffer()).getData();
+        // var mat = new Mat(source.getHeight(), source.getWidth(), CvType.CV_8UC3);
 
-        mat.put(0, 0, data);
+        // mat.put(0, 0, data);
 
-        this.image = mat;
+        // this.image = mat;
     }
 
     public void drawBounds(Rect bounds) {
@@ -42,6 +47,15 @@ public class ResultImage {
         File resultFile = new File(fileName);
 
         Imgcodecs.imwrite(resultFile.getAbsolutePath(), this.image);
+    }
+
+    public void saveSimple(String fileName) {
+        File resultFile = new File(fileName);
+        try {
+            ImageIO.write(Objects.requireNonNull(ImageUtils.matToBufferedImage(image)), "png", resultFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public byte[] encodeToPng() {

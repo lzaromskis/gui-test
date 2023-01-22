@@ -16,6 +16,19 @@ public class CheckResult {
             .getAbsolutePath() + " " + this.message);
     }
 
+    public CheckResult(State state, BaseRuleCheck ruleCheck, String message, long defectsCount, ResultImage image) {
+        this.message = message;
+        this.state = state;
+        this.ruleCheck = ruleCheck;
+        this.appContext = state.getAppContext();
+        this.defectsCount = defectsCount;
+        this.resultImage = image;
+
+        this.ruleCheck.logMessage(this.ruleCheck.getRuleCode() + ": " + this.state
+            .getImageFile()
+            .getAbsolutePath() + " " + this.message);
+    }
+
     public CheckResult(AppContext appContext, BaseRuleCheck ruleCheck, String message) {
         this.state = null;
         this.message = message;

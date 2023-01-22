@@ -1,6 +1,7 @@
 package edu.ktu.screenshotanalyser.tools;
 
 import edu.ktu.screenshotanalyser.context.State;
+import edu.ktu.screenshotanalyser.utils.models.TextZoneWithBounds;
 import org.opencv.core.Rect;
 
 import java.awt.image.BufferedImage;
@@ -11,10 +12,10 @@ public class TextZoneExtractor implements ITextZoneExtractor{
     private static final int MINIMUM_ZONE_HEIGHT = 6;
 
     @Override
-    public BufferedImage[] extract(State state) {
+    public TextZoneWithBounds[] extract(State state) {
         var controls = state.getActualControls();
         var stateImage = state.getImage();
-        var textZones = new ArrayList<BufferedImage>();
+        var textZones = new ArrayList<TextZoneWithBounds>();
 
         for (var control: controls) {
             var bounds = control.getBounds();
@@ -24,22 +25,28 @@ public class TextZoneExtractor implements ITextZoneExtractor{
             }
 
             try {
+                var correctBounds = new Rect(bounds.x,
+                                             bounds.y,
+                                             getCorrectMeasurement(bounds.x, bounds.width, stateImage.getWidth()),
+                                             getCorrectMeasurement(bounds.y, bounds.height, stateImage.getHeight())
+                );
+
                 var textZone = stateImage.getSubimage(
-                    bounds.x,
-                    bounds.y,
-                    getCorrectMeasurement(bounds.x, bounds.width, stateImage.getWidth()),
-                    getCorrectMeasurement(bounds.y, bounds.height, stateImage.getHeight())
+                    correctBounds.x,
+                    correctBounds.y,
+                    correctBounds.width,
+                    correctBounds.height
                 );
                 // Filter out small zones
                 if (textZone.getWidth() >= MINIMUM_ZONE_WIDTH && textZone.getHeight() >= MINIMUM_ZONE_HEIGHT) {
-                    textZones.add(textZone);
+                    textZones.add(new TextZoneWithBounds(textZone, correctBounds));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
 
-        return textZones.toArray(BufferedImage[]::new);
+        return textZones.toArray(TextZoneWithBounds[]::new);
     }
 
     private int getCorrectMeasurement(int coord, int length, int maxLength) {

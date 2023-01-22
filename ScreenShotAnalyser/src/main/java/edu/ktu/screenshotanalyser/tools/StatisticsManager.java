@@ -3,13 +3,28 @@ package edu.ktu.screenshotanalyser.tools;
 import edu.ktu.screenshotanalyser.checks.CheckResult;
 import edu.ktu.screenshotanalyser.context.AppContext;
 import edu.ktu.screenshotanalyser.context.State;
+import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StatisticsManager {
     protected String connectionUrl = "jdbc:sqlserver://DESKTOP-NML4AD7;database=defects-db;user=gui;password=gui;encrypt=true;trustServerCertificate=true;";
+
+    private String _defectImagesFolderPath;
+
+    public StatisticsManager() {
+        super();
+
+        try {
+            _defectImagesFolderPath = Configuration.instance()
+                                                   .getDefectImagesFolderPath();
+        } catch (MissingSettingException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void saveAppInfo(AppContext appContext) {
         if ((null == appContext.getPackage()) || (null == appContext.getApkFile()) || (null == appContext.getLocales())) {
@@ -155,19 +170,33 @@ public class StatisticsManager {
     }
 
     public void logDetectedDefect(long testRunId, CheckResult result) {
+        var unixTime = System.currentTimeMillis() / 1000L;
         try (var connection = DriverManager.getConnection(connectionUrl)) {
+
+            var defectImageId = java.util.UUID.randomUUID();
+            var defectImagePath = _defectImagesFolderPath + "\\" + defectImageId.toString() + ".png";
+            var defectImage = result.getResultImage();
+            if (defectImage != null) {
+                defectImage.saveSimple(defectImagePath);
+            }
+
             if (null != result.getState()) {
                 var screenshotId = getScreenShotId(result.getState(), connection);
 
+
+
+
                 insert(connection,
-                       "INSERT TestRunDefect (DefectTypeId, ScreenshotId, TestRunId, DefectsCount, Message) VALUES (?, ?, ?, ?, ?)",
+                       "INSERT TestRunDefect (DefectTypeId, ScreenshotId, TestRunId, DefectsCount, Message, DiscoveredOn, DefectImagePath) VALUES (?, ?, ?, ?, ?, ?, ?)",
                        result
                            .getRule()
                            .getId(),
                        screenshotId,
                        testRunId,
                        result.getDefectsCount(),
-                       result.getMessage());
+                       result.getMessage(),
+                       unixTime,
+                       defectImagePath);
             } else {
                 var applicationId = getId(connection,
                                           "SELECT Id FROM Application WHERE Package = ?",
@@ -176,14 +205,16 @@ public class StatisticsManager {
                                               .getPackage());
 
                 insert(connection,
-                       "INSERT TestRunDefect (DefectTypeId, ApplicationId, TestRunId, DefectsCount, Message) VALUES (?, ?, ?, ?, ?)",
+                       "INSERT TestRunDefect (DefectTypeId, ApplicationId, TestRunId, DefectsCount, Message, DiscoveredOn, DefectImagePath) VALUES (?, ?, ?, ?, ?, ?, ?)",
                        result
                            .getRule()
                            .getId(),
                        applicationId,
                        testRunId,
                        result.getDefectsCount(),
-                       result.getMessage());
+                       result.getMessage(),
+                       unixTime,
+                       defectImagePath);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -195,10 +226,15 @@ public class StatisticsManager {
             .getImageFile()
             .getAbsolutePath();
 
-        if (fileName.startsWith(Settings.appImagesFolder.getAbsolutePath())) {
-            fileName = fileName.substring(Settings.appImagesFolder
-                                              .getAbsolutePath()
-                                              .length() + 1);
+        String imagesFolderPath;
+        try {
+            imagesFolderPath = Configuration.instance().getAppImagesFolderPath();
+        } catch (MissingSettingException | IOException e) {
+            imagesFolderPath = Settings.appImagesFolder.getAbsolutePath();
+        }
+
+        if (fileName.startsWith(imagesFolderPath)) {
+            fileName = fileName.substring(imagesFolderPath.length() + 1);
         }
 
         return getId(connection, "SELECT Id FROM ScreenShot WHERE FileName = ?", fileName);
