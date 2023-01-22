@@ -99,6 +99,10 @@ public class Configuration {
         return getString("debugFolderPath");
     }
 
+    public String getDefectImagesFolderPath() throws MissingSettingException {
+        return getString("defectImagesFolderPath");
+    }
+
     public ColorCombinations getColorCombination() throws MissingSettingException, IllegalArgumentException {
         return ColorCombinations.parseString(getString("colorCombination"));
     }
@@ -113,7 +117,6 @@ public class Configuration {
             .toArray(ColorSpaces[]::new);
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean getIsTestInstance() {
         try {
             return Boolean.parseBoolean(getString("isTestInstance"));

@@ -1,9 +1,6 @@
 package edu.ktu.screenshotanalyser.checks.experiments.colors;
 
-import edu.ktu.screenshotanalyser.checks.BaseRuleCheck;
-import edu.ktu.screenshotanalyser.checks.CheckResult;
-import edu.ktu.screenshotanalyser.checks.IStateRuleChecker;
-import edu.ktu.screenshotanalyser.checks.ResultsCollector;
+import edu.ktu.screenshotanalyser.checks.*;
 import edu.ktu.screenshotanalyser.context.State;
 import edu.ktu.screenshotanalyser.enums.ColorSpaces;
 import edu.ktu.screenshotanalyser.enums.RuleCheckCodes;
@@ -58,12 +55,22 @@ public class ColorReadabilityCheck extends BaseRuleCheck implements IStateRuleCh
 
         for (var textZone: textZones) {
             for (var colorSpace: colorSpaces) {
-                var convertedTextZone = _colorSpaceConverter.convertImage(textZone, colorSpace);
+                var convertedTextZone = _colorSpaceConverter.convertImage(textZone.getTextZone(), colorSpace);
                 var result = calculateCompatibility(convertedTextZone);
 
                 var failed = result <= FAILURE_THRESHOLD;
                 if (failed) {
-                    failures.addFailure(new CheckResult(state, this, getFailureMessage(state, colorSpace, result), 1));
+                    var image = state.getImage();
+                    var convertedImage = _colorSpaceConverter.convertImage(image, colorSpace);
+                    var resultImage = new ResultImage(convertedImage);
+                    resultImage.drawBounds(textZone.getBounds());
+
+                    failures.addFailure(new CheckResult(
+                        state,
+                        this,
+                        getFailureMessage(state, colorSpace, result),
+                        1,
+                        resultImage));
                 }
 
                 // TODO: Remove this. For debug purposes only.

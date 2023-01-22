@@ -1,9 +1,6 @@
 package edu.ktu.screenshotanalyser.checks.experiments.colors;
 
-import edu.ktu.screenshotanalyser.checks.BaseRuleCheck;
-import edu.ktu.screenshotanalyser.checks.CheckResult;
-import edu.ktu.screenshotanalyser.checks.IStateRuleChecker;
-import edu.ktu.screenshotanalyser.checks.ResultsCollector;
+import edu.ktu.screenshotanalyser.checks.*;
 import edu.ktu.screenshotanalyser.context.State;
 import edu.ktu.screenshotanalyser.enums.ColorCombinations;
 import edu.ktu.screenshotanalyser.enums.ColorSpaces;
@@ -66,7 +63,15 @@ public class ColorCompatibilityCheck extends BaseRuleCheck implements IStateRule
 
             var failed = result <= FAILURE_THRESHOLD;
             if (failed) {
-                failures.addFailure(new CheckResult(state, this, getFailureMessage(state, combination, colorSpace, result), 1));
+                var convertedImageFullSize = _colorSpaceConverter.convertImage(image, colorSpace);
+                var resultImage = new ResultImage(convertedImageFullSize);
+
+                failures.addFailure(new CheckResult(
+                    state,
+                    this,
+                    getFailureMessage(state, combination, colorSpace, result),
+                    1,
+                    resultImage));
             }
 
             // TODO: Remove this. For debug purposes only.

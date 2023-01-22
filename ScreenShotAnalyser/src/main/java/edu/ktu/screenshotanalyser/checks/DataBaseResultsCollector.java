@@ -1,9 +1,12 @@
 package edu.ktu.screenshotanalyser.checks;
 
 import edu.ktu.screenshotanalyser.context.State;
+import edu.ktu.screenshotanalyser.exceptions.MissingSettingException;
+import edu.ktu.screenshotanalyser.tools.Configuration;
 import edu.ktu.screenshotanalyser.tools.Settings;
 import edu.ktu.screenshotanalyser.tools.StatisticsManager;
 
+import java.io.IOException;
 import java.util.HashSet;
 
 public class DataBaseResultsCollector extends ResultsCollector {
@@ -26,10 +29,16 @@ public class DataBaseResultsCollector extends ResultsCollector {
             .getImageFile()
             .getAbsolutePath();
 
-        if (fileName.startsWith(Settings.appImagesFolder.getAbsolutePath())) {
-            fileName = fileName.substring(Settings.appImagesFolder
-                                              .getAbsolutePath()
-                                              .length() + 1);
+        String imagesFolderPath;
+        try {
+            imagesFolderPath = Configuration
+                .instance().getAppImagesFolderPath();
+        } catch (MissingSettingException | IOException e) {
+            imagesFolderPath = Settings.appImagesFolder.getAbsolutePath();
+        }
+
+        if (fileName.startsWith(imagesFolderPath)) {
+            fileName = fileName.substring(imagesFolderPath.length() + 1);
         }
 
         synchronized (this) {

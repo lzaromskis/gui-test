@@ -8,7 +8,7 @@ import edu.ktu.screenshotanalyser.tools.IOutput;
  * Collects all analysis results in a thread safe manner.
  */
 public abstract class ResultsCollector {
-    private IOutput _output;
+    private final IOutput _output;
 
     protected ResultsCollector(boolean acceptsResultImages) {
         this.acceptsResultImages = acceptsResultImages;

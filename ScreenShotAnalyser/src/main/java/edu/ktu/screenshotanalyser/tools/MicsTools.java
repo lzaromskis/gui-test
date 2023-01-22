@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MicsTools extends StatisticsManager {
-    public static void main(String[] args) throws SQLException, IOException {
+    //public static void main(String[] args) throws SQLException, IOException {
         //new MicsTools().importTooSmallResultsFromLogFile();
         //new MicsTools().importBadSpellingResultsFromLogFile();
         //		new MicsTools().importMisingTextsResultsFromLogFile();
-    }
+    //}
 
     private void importTooSmallResultsFromLogFile() throws SQLException, IOException {
         List<String> allLines = Files.readAllLines(Paths.get("E:\\_analyzer_\\logTS2.txt"));
